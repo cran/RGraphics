@@ -1,15 +1,26 @@
-figure19.1 <- function() {
-midpts <- barplot(1:10, col="gray90", axes=FALSE)
-axis(2)
-axis(1, at=midpts, labels=FALSE)
+figure12.1 <- function() {
 
+m <- factor(months(zoo::as.yearmon(time(datasets::sunspots))),
+            levels=month.name)
+plot(m, datasets::sunspots, axes=FALSE)
+axis(2)
+axis(1, at=1:12, labels=FALSE)
+
+
+}
+figure12.2 <- function() {
+
+m <- factor(months(zoo::as.yearmon(time(datasets::sunspots))),
+            levels=month.name)
+plot(m, datasets::sunspots, axes=FALSE)
+axis(2)
+axis(1, at=1:12, labels=FALSE)
 
 vps <- gridBase::baseViewports()
 pushViewport(vps$inner, vps$figure, vps$plot)
 
-grid.text(c("one", "two", "three", "four", "five",
-            "six", "seven", "eight", "nine", "ten"), 
-          x=unit(midpts, "native"), y=unit(-1, "lines"),
+grid.text(month.name, 
+          x=unit(1:12, "native"), y=unit(-1, "lines"),
           just="right", rot=60)
 popViewport(3)
 
@@ -17,7 +28,7 @@ popViewport(3)
 
 
 }
-figure19.2 <- function() {
+figure12.3 <- function() {
 hc <- hclust(dist(USArrests), "ave")
 dend1 <- as.dendrogram(hc)
 dend2 <- cut(dend1, h=70)
@@ -54,6 +65,93 @@ print(xyplot(y ~ x | height, subscripts=TRUE,
       newpage=FALSE)
 
 
+
+
+}
+figure12.4 <- function() {
+
+m <- factor(months(zoo::as.yearmon(time(datasets::sunspots))),
+            levels=month.name)
+plot(m, datasets::sunspots, axes=FALSE)
+axis(2)
+axis(1, at=1:12, labels=FALSE)
+
+
+plot(m, datasets::sunspots)
+
+
+}
+figure12.5 <- function() {
+
+m <- factor(months(zoo::as.yearmon(time(datasets::sunspots))),
+            levels=month.name)
+plot(m, datasets::sunspots, axes=FALSE)
+axis(2)
+axis(1, at=1:12, labels=FALSE)
+
+
+dev.control("enable")
+plot(m, datasets::sunspots)
+grid.echo()
+grid.edit("graphics-plot-1-bottom-axis-labels-1", 
+          y=unit(-1, "lines"), hjust=1, vjust=0.5, rot=60)
+
+
+}
+figure12.6 <- function() {
+hc <- hclust(dist(USArrests), "ave")
+dend1 <- as.dendrogram(hc)
+dend2 <- cut(dend1, h=70)
+
+
+
+x <- 1:4
+y <- 1:4
+height <- factor(round(sapply(dend2$lower, 
+                              attr, "height")))
+
+
+
+dendpanel <- function(x, y, subscripts, ...) {
+  pushViewport(viewport(gp=gpar(fontsize=8)),
+               viewport(y=unit(0.95, "npc"), 
+                        height=unit(0.95, "npc"),
+                        just="top"))
+  grid.echo(function() {
+                par(mar=c(5.1, 0, 1, 0))
+                plot(dend2$lower[[subscripts]], axes=FALSE)
+            },
+            newpage=FALSE, 
+            prefix=paste0("dend-", panel.number()))
+  popViewport(2)
+}
+
+
+xyplot(y ~ x | height, subscripts=TRUE, 
+       xlab="", ylab="",
+       strip=strip.custom(style=4), 
+       scales=list(draw=FALSE), 
+       panel=dendpanel)
+
+
+}
+figure12.7 <- function() {
+
+
+
+cpfun <- function() {
+    coplot(lat ~ long | depth, datasets::quakes, pch=16, cex=.5,
+           given.values=rbind(c(0, 400), c(300, 700)))
+}
+pushViewport(viewport(y=0, height=.7, just="bottom"))
+grid.echo(cpfun, newpage=FALSE, prefix="cp")
+upViewport()
+
+pushViewport(viewport(y=1, height=.33, just="top"))
+gg <- ggplot(datasets::quakes) + geom_histogram(aes(x=depth)) +
+      theme(axis.title.x = element_blank())
+print(gg, newpage=FALSE)
+upViewport()
 
 
 }
@@ -273,6 +371,15 @@ popViewport()
 
 }
 figure3.6 <- function() {
+EU1992 <- window(datasets::EuStockMarkets, 1992, 1993)
+par(lty="dashed")
+plot(EU1992[,"DAX"], ylim=range(EU1992))
+lines(EU1992[,"CAC"], lty="solid")
+lines(EU1992[,"FTSE"])
+
+
+}
+figure3.7 <- function() {
 par(mar=rep(0, 4), cex=0.7)
 plot.new()
 plot.window(c(0.05, 0.95), 0:1)
@@ -300,7 +407,7 @@ rect(c(.27, .5, .73) - .01,
 
 
 }
-figure3.7 <- function() {
+figure3.8 <- function() {
 par(mar=rep(0, 4), xaxs="i", yaxs="i", cex=0.8)
 plot.new()
 par(new=TRUE)
@@ -329,7 +436,7 @@ for (i in 1:nrow) {
 
 
 }
-figure3.8 <- function() {
+figure3.9 <- function() {
 ncol <- 6
 nrow <- 1
 grid.rect(gp=gpar(col="gray"))
@@ -347,7 +454,7 @@ for (i in 1:nrow) {
 
 
 }
-figure3.9 <- function() {
+figure3.10 <- function() {
 x <- -5:5
 y <- -x^2 + 25
 plottype <- function(type) {
@@ -372,10 +479,10 @@ plottype("s")
 
 
 }
-figure3.10 <- function() {
+figure3.11 <- function() {
 axisfun <- function(mgp=c(3, 1, 0), xaxs="r", tcl=-.5,
                     mgpcol="black", xaxscol="black", tclcol="black") {
-  par(mar=c(5, 1, 0, 1), mgp=mgp, xaxs=xaxs, tcl=tcl, pty="s")
+  par(mar=c(4, 1, 0, 1), mgp=mgp, xaxs=xaxs, tcl=tcl, pty="s")
   plot.new()
   box(col="gray")
   text(.5, .75, paste("mgp=c(", paste(mgp, collapse=", "), ")", sep=""),
@@ -398,7 +505,7 @@ axisfun(xaxs="i", mgpcol="gray", tclcol="gray")
 
 
 }
-figure3.11 <- function() {
+figure3.12 <- function() {
 
 par(oma=rep(3, 4))
 vps <- gridBase::baseViewports()
@@ -471,7 +578,7 @@ popViewport(3)
 
 
 }
-figure3.12 <- function() {
+figure3.13 <- function() {
 grid.lshow <- function(i, j, lab, order, nrow, ncol, heights, respect) {
   pushViewport(viewport(layout.pos.col=j, layout.pos.row=i))
   pushViewport(viewport(width=unit(1, "npc") - unit(2, "lines"),
@@ -504,7 +611,7 @@ popViewport()
 
 
 }
-figure3.13 <- function() {
+figure3.14 <- function() {
 grid.lshow <- function(i, j, lab, locs, nrow, ncol, heights, respect) {
   pushViewport(viewport(layout.pos.col=j, layout.pos.row=i))
   pushViewport(viewport(width=unit(1, "npc") - unit(2, "lines"),
@@ -552,38 +659,37 @@ popViewport()
 
 
 }
-figure3.14 <- function() {
+figure3.15 <- function() {
 par(mfrow=c(1, 2), mar=c(1, 1, 2, 1))
 par(cex=0.7)
-x <- 1:10
-y <- matrix(sort(rnorm(30)), ncol=3)
-plot(x, y[,1], ylim=range(y), ann=FALSE, axes=FALSE, 
-     type="l", col="gray")
+EUdays <- window(datasets::EuStockMarkets, c(1992,1), c(1992,10))
+plot(EUdays[,"DAX"], ylim=range(EUdays), ann=FALSE, 
+     axes=FALSE, type="l", col="gray")
+
+points(EUdays[,"DAX"])
+lines(EUdays[,"CAC"], col="gray")
+points(EUdays[,"CAC"], pch=2)
+lines(EUdays[,"FTSE"], col="gray")
+points(EUdays[,"FTSE"], pch=3)
+
+
 box(col="gray")
-
-points(x, y[,1])
-lines(x, y[,2], col="gray")
-points(x, y[,2], pch=2)
-lines(x, y[,3], col="gray")
-points(x, y[,3], pch=3)
-
-
 mtext("points() & lines()", side=3, line=0.5)
 x <- 1:5
 y <- x
 plot(x, y, ann=FALSE, axes=FALSE, col="gray", pch=16)
-box(col="gray")
 
 text(x[-3], y[-3], c("right", "top", "bottom", "left"), 
      pos=c(4, 3, 1, 2))
 text(3, 3, "overlay")
 
+box(col="gray")
 mtext("text()", side=3, line=0.5)
 
 
 
 }
-figure3.15 <- function() {
+figure3.16 <- function() {
 t <- seq(60, 360, 30)
 x <- cos(t/180*pi)*t/360
 y <- sin(t/180*pi)*t/360
@@ -592,8 +698,10 @@ y <- sin(t/180*pi)*t/360
 
 
 source(system.file("extra", "as.raster.R", package="RGraphics"))
-rlogo <- pixmap::read.pnm(system.file("pictures/logo.pgm", 
-                              package="pixmap")[1])
+  ## Silly warning from pixmap::pixmap() about cellres=NULL
+suppressWarnings(
+  rlogo <- pixmap::read.pnm(system.file("pictures/logo.pgm", 
+                              package="pixmap")[1]))
 
 
 
@@ -669,42 +777,40 @@ plot(x, y, pch=16, col="gray",
 box(col="gray")
 mtext("rasterImage()", side=3, line=.6, cex=.7, family="mono")
 rasterImage(rlogo,
-            x - .07, y - .07,
-            x + .07, y + .07,
-            interpolate=FALSE)
+            x - .1, y - .1,
+            x + .1, y + .1)
 
 
 
 
 
 }
-figure3.16 <- function() {
+figure3.17 <- function() {
 par(mfrow=c(1, 2), mar=c(1, 1, 2, 1), pty="s")
 par(cex=0.7)
-x <- runif(20, 1, 10)
-y <- x + rnorm(20)
-plot(x, y, ann=FALSE, axes=FALSE, col="gray", pch=16)
-box(col="gray")
+plot(datasets::cars, ann=FALSE, axes=FALSE, col="gray", pch=16)
 
-lmfit <- lm(y ~ x)
+lmfit <- lm(dist ~ speed, datasets::cars)
 abline(lmfit)
-arrows(5, 8, 7, predict(lmfit, data.frame(x=7)),
+arrows(15, 90, 19, predict(lmfit, data.frame(speed=19)),
        length=0.1)
-text(5, 8, "Line of best fit", pos=2)
+text(15, 90, "Line of best fit", pos=2)
+
+box(col="gray")
 
 mtext("abline() & arrows()", side=3, line=0.5)
-y <- rnorm(50)
-hist(y, main="", xlab="", ylab="", axes=FALSE, 
-     border="gray", col="light gray")
+plot(datasets::cars, ann=FALSE, axes=FALSE, col="gray", pch=16)
+
+rug(datasets::cars$dist, side=2)
+
 box(col="gray")
-rug(y, ticksize=0.02)
 
 mtext("rug()", side=3, line=0.5)
 
 
 
 }
-figure3.17 <- function() {
+figure3.18 <- function() {
 angle <- seq(0, 2*pi, length=13)[-13]
 x <- 0.15*cos(angle)
 y <- 0.5 + 0.3*sin(angle)
@@ -721,33 +827,34 @@ polygon(0.75 + x, y, col="gray")
 
 
 }
-figure3.18 <- function() {
-par(mar=c(2, 1, 1, 1))
-y1 <- rnorm(100)
-y2 <- rnorm(100)
-
+figure3.19 <- function() {
+par(mar=c(2, 2, 1, 1))
 par(mfrow=c(2, 1), xpd=NA)
 
-plot(y1, type="l", axes=FALSE,
+plot(datasets::EuStockMarkets[,"DAX"], type="l", axes=FALSE,
      xlab="", ylab="", main="")
 box(col="gray")
-mtext("Left end of margin", adj=0, side=3)
-lines(x=c(20, 20, 40, 40), y=c(-7, max(y1), max(y1), -7), 
+mtext("Mid 1991", adj=0, side=3)
+lines(x=c(1995, 1995, 1996, 1996), 
+      y=c(-1000, 6000, 6000, -1000), 
       lwd=3, col="gray")
+mtext("DAX", side=2, line=0)
 
-plot(y2, type="l", axes=FALSE,
+plot(datasets::EuStockMarkets[,"FTSE"], type="l", axes=FALSE,
      xlab="", ylab="", main="")
 box(col="gray")
-mtext("Right end of margin", adj=1, side=3)
-mtext("Label below x=30", at=30, side=1)
-lines(x=c(20, 20, 40, 40), y=c(7, min(y2), min(y2), 7), 
+mtext("Mid 1998", adj=1, side=3)
+mtext("1995", at=1995.5, side=1)
+lines(x=c(1995, 1995, 1996, 1996), 
+      y=c(7000, 2500, 2500, 7000), 
       lwd=3, col="gray")
+mtext("FTSE", side=2, line=0)
 
 
 
 
 }
-figure3.19 <- function() {
+figure3.20 <- function() {
 par(mfrow=c(2, 1), mar=c(5, 3, 2, 1), cex=0.5, pty="s")
 with(iris,
      plot(Sepal.Length, Sepal.Width, 
@@ -755,51 +862,39 @@ with(iris,
 legend(6.1, 4.4, c("setosa", "versicolor", "virginica"), 
        cex=1.5, pch=1:3)
 
-barplot(VADeaths[1:2,], angle=c(45, 135), density=20, 
-        col="gray", names=c("RM", "RF", "UM", "UF"))
+barplot(VADeaths[1:2,], angle=c(45, 135), density=30, 
+        col="black", names=c("RM", "RF", "UM", "UF"))
 legend(0.4, 38, c("55-59", "50-54"), cex=1.5,
-       angle=c(135, 45), density=20, fill="gray")
-
-
-
-
-}
-figure3.20 <- function() {
-par(cex=0.8)
-x <- 1:2
-y <- runif(2, 0, 100)
-par(mar=c(4, 4, 2, 4))
-plot(x, y, type="n", xlim=c(0.5, 2.5), ylim=c(-10, 110),
-     axes=FALSE, ann=FALSE)
-
-axis(2, at=seq(0, 100, 20))
-mtext("Temperature (Centigrade)", side=2, line=3)
-
-axis(1, at=1:2, labels=c("Treatment 1", "Treatment 2"))
-axis(4, at=seq(0, 100, 20), labels=seq(0, 100, 20)*9/5 + 32)
-mtext("Temperature (Fahrenheit)", side=4, line=3)
-box()
-
-segments(x, 0, x, 100, lwd=20)
-segments(x, 0, x, 100, lwd=16, col="white")
-segments(x, 0, x, y, lwd=16, col="gray")
+       angle=c(135, 45), density=30)
 
 
 
 
 }
 figure3.21 <- function() {
+nhtempCelsius <- 5*(nhtemp - 32)/9
+
+plot(nhtempCelsius, axes=FALSE, ann=FALSE, ylim=c(0, 13))
+
+axis(2, at=seq(0, 12, 4))
+mtext("Degrees Centigrade", side=2, line=3)
+
+axis(1)
+axis(4, at=seq(0, 12, 4), labels=seq(0, 12, 4)*9/5 + 32)
+mtext(" Degrees Fahrenheit", side=4, line=3)
+box()
+
+
+
+
+}
+figure3.22 <- function() {
 par(mar=rep(1, 4))
 plot(0:1, 0:1, type="n", axes=FALSE, ann=FALSE)
 usr <- par("usr")
 pin <- par("pin")
 xcm <- diff(usr[1:2])/(pin[1]*2.54)
 ycm <- diff(usr[3:4])/(pin[2]*2.54)
-
-par(xpd=NA)
-rect(0 + 0.2*xcm, 0 - 0.2*ycm,
-     1 + 0.2*xcm, 1 - 0.2*ycm,
-     col="gray", border=NA)
 
 rect(0, 0, 1, 1, col="white")
 segments(seq(1, 8, 0.1)*xcm, 0,
@@ -814,7 +909,7 @@ text(8.2*xcm, 0.6*ycm, "cm", adj=c(0, 0))
 
 
 }
-figure3.22 <- function() {
+figure3.23 <- function() {
 layout(matrix(1:2, ncol=1), heights=1:2/6.5)
 par(cex=0.7)
 drunkenness <- ts(c(3875, 4846, 5128, 5773, 7327, 
@@ -847,53 +942,53 @@ mtext("symbols(..., add=TRUE)", font=2, side=3, line=1)
 
 
 }
-figure3.23 <- function() {
-xx <- c(1:50)
-yy <- rnorm(50)
-n <- 50
-hline <- 0
+figure3.24 <- function() {
+x <- as.numeric(time(nhtemp))
+y <- as.numeric(nhtemp)
+n <- length(x)
+mean <- mean(y)
 
 
 
-xx <- c(1:50)
-yy <- rnorm(50)
-n <- 50
-hline <- 0
+x <- as.numeric(time(nhtemp))
+y <- as.numeric(nhtemp)
+n <- length(x)
+mean <- mean(y)
 
 par(mfrow=c(2,2), mar=c(3, 3, 1, 1))
-plot (yy ~ xx, type="n", axes=FALSE, ann=FALSE)
-polygon(c(xx[1], xx, xx[n]), c(min(yy), yy, min(yy)), 
+plot(x, y, type="n", axes=FALSE, ann=FALSE)
+polygon(c(x[1], x, x[n]), c(min(y), y, min(y)), 
         col="gray", border=NA)
 
 box(col="gray")
-plot (yy ~ xx, type="n", axes=FALSE, ann=FALSE)
-polygon(c(xx[1], xx, xx[n]), c(min(yy), yy, min(yy)), 
+plot(x, y, type="n", axes=FALSE, ann=FALSE)
+polygon(c(x[1], x, x[n]), c(min(y), y, min(y)), 
         col="gray", border=NA)
 
 usr <- par("usr")
-rect(usr[1], usr[3], usr[2], hline, col="white", border=NA)
+rect(usr[1], usr[3], usr[2], mean, col="white", border=NA)
 
 box(col="gray")
-plot (yy ~ xx, type="n", axes=FALSE, ann=FALSE)
-polygon(c(xx[1], xx, xx[n]), c(min(yy), yy, min(yy)), 
+plot(x, y, type="n", axes=FALSE, ann=FALSE)
+polygon(c(x[1], x, x[n]), c(min(y), y, min(y)), 
         col="gray", border=NA)
 
 usr <- par("usr")
-rect(usr[1], usr[3], usr[2], hline, col="white", border=NA)
+rect(usr[1], usr[3], usr[2], mean, col="white", border=NA)
 
-lines(xx, yy)
+lines(x, y)
 
 box(col="gray")
-plot (yy ~ xx, type="n", axes=FALSE, ann=FALSE)
-polygon(c(xx[1], xx, xx[n]), c(min(yy), yy, min(yy)), 
+plot(x, y, type="n", axes=FALSE, ann=FALSE)
+polygon(c(x[1], x, x[n]), c(min(y), y, min(y)), 
         col="gray", border=NA)
 
 usr <- par("usr")
-rect(usr[1], usr[3], usr[2], hline, col="white", border=NA)
+rect(usr[1], usr[3], usr[2], mean, col="white", border=NA)
 
-lines(xx, yy)
+lines(x, y)
 
-abline (h=hline,col="gray")
+abline (h=mean, col="gray")
 box()
 axis(1)
 axis(2) 
@@ -902,7 +997,7 @@ axis(2)
 
 
 }
-figure3.24 <- function() {
+figure3.25 <- function() {
 par(mfrow=c(1, 2), mar=c(3, 3, 1, 1), cex=0.7)
 y <- sample(1:10)
 midpts <- barplot(y, col=" light gray")
@@ -927,7 +1022,7 @@ with(ToothGrowth,
 
 
 }
-figure3.25 <- function() {
+figure3.26 <- function() {
 par(cex=.7)
 pairs(iris[1:2], 
       diag.panel=function(x, ...) { 
@@ -943,7 +1038,7 @@ pairs(iris[1:2],
 
 
 }
-figure3.26 <- function() {
+figure3.27 <- function() {
 par(mar=rep(0, 4))
 z <- 2 * volcano        
 x <- 10 * (1:nrow(z))   
@@ -962,7 +1057,18 @@ lapply(clines,
 
 
 }
-figure3.27 <- function() {
+figure3.28 <- function() {
+plot.new()
+plot.window(range(pressure$temperature), 
+            range(pressure$pressure))
+plot.xy(pressure, type="p")
+box()
+axis(1)
+axis(2)
+
+
+}
+figure3.29 <- function() {
 groups <- dimnames(Titanic)[[1]]
 males <- Titanic[, 1, 2, 2]
 females <- Titanic[, 2, 2, 2]
@@ -981,7 +1087,7 @@ segments(-200, y, 200, y, lty="dotted")
 rect(-males, y-h, 0, y+h, col="dark gray")
 rect(0, y-h, females, y+h, col="light gray")
 mtext(groups, at=y, adj=1, side=2, las=2)
-par(cex.axis=0.5, mex=0.5)
+par(cex.axis=0.8, mex=0.5)
 axis(1, at=ticks, labels=abs(ticks), pos=0)
 
 tw <- 1.5*strwidth("females")
@@ -995,31 +1101,30 @@ box("inner", col="gray")
 
 
 }
-plot.newclass <- 
-  function(x, y=NULL, 
-           main="", sub="",
-           xlim=NULL, ylim=NULL,
-           axes=TRUE, ann=par("ann"),
-           col=par("col"),
-           ...) {
-  xy <- xy.coords(x, y)
-  if (is.null(xlim))
-    xlim <- range(xy$x[is.finite(xy$x)])
-  if (is.null(ylim))
-    ylim <- range(xy$y[is.finite(xy$y)])
-  opar <- par(no.readonly=TRUE)
-  on.exit(par(opar))
-  plot.new()
-  plot.window(xlim, ylim, ...)
-  points(xy$x, xy$y, col=col, ...)
-  if (axes) {
-    axis(1)
-    axis(2)
-    box()
-  }
-  if (ann) 
-    title(main=main, sub=sub, 
-          xlab=xy$xlab, ylab=xy$ylab, ...)
+plot.newclass <- function(x, y=NULL, 
+                          main="", sub="",
+                          xlim=NULL, ylim=NULL,
+                          axes=TRUE, ann=par("ann"),
+                          col=par("col"),
+                          ...) {
+    xy <- xy.coords(x, y)
+    if (is.null(xlim))
+        xlim <- range(xy$x[is.finite(xy$x)])
+    if (is.null(ylim))
+        ylim <- range(xy$y[is.finite(xy$y)])
+    opar <- par(no.readonly=TRUE)
+    on.exit(par(opar))
+    plot.new()
+    plot.window(xlim, ylim, ...)
+    points(xy$x, xy$y, col=col, ...)
+    if (axes) {
+        axis(1)
+        axis(2)
+        box()
+    }
+    if (ann) 
+        title(main=main, sub=sub, 
+              xlab=xy$xlab, ylab=xy$ylab, ...)
 }
 
 
@@ -1334,8 +1439,26 @@ grid.rect(width=unit(1, "npc") + unit(2, "mm"),
 
 }
 figure6.16 <- function() {
-grid.rect(gp=gpar(col="gray"))
-pushViewport(viewport(gp=gpar(fill=NA)))
+pushViewport(viewport(layout=grid.layout(1, 3)))
+pushViewport(viewport(layout.pos.col=1, gp=gpar(fill=NA)))
+grid.rect(width=.9, height=.9, gp=gpar(col="gray"))
+pushViewport(viewport(width=.5, height=.5, clip="on"))
+grid.rect()
+grid.circle(r=.7, gp=gpar(lwd=20))
+
+popViewport(2)
+pushViewport(viewport(layout.pos.col=2, gp=gpar(fill=NA)))
+grid.rect(width=.9, height=.9, gp=gpar(col="gray"))
+pushViewport(viewport(width=.5, height=.5, clip="on"))
+grid.rect()
+grid.circle(r=.7, gp=gpar(lwd=20))
+
+pushViewport(viewport(clip="inherit"))
+grid.circle(r=.7, gp=gpar(lwd=10, col="gray"))
+
+popViewport(3)
+pushViewport(viewport(layout.pos.col=3, gp=gpar(fill=NA)))
+grid.rect(width=.9, height=.9, gp=gpar(col="gray"))
 pushViewport(viewport(width=.5, height=.5, clip="on"))
 grid.rect()
 grid.circle(r=.7, gp=gpar(lwd=20))
@@ -1347,6 +1470,7 @@ pushViewport(viewport(clip="off"))
 grid.circle(r=.7)
 popViewport(3)
 
+popViewport()
 
 
 
@@ -1603,8 +1727,9 @@ pushViewport(viewport(x=.4, width=.6, just="left"))
 print(xyplot(mpg ~ disp, data=mtcars,
              group=gear, 
              auto.key=list(space="right"),
-             par.settings=list(superpose.symbol=list(pch=c(1, 3, 16),
-                                 fill="white"))),
+             par.settings=list(
+                 superpose.symbol=list(pch=c(1, 3, 16),
+                                       fill="white"))),
       newpage=FALSE)
 popViewport()
 
@@ -1632,7 +1757,13 @@ ggplot(mtcars2, aes(x=disp, y=mpg)) +
     geom_point()
 
 )
-downViewport("panel.3-4-3-4")
+# Navigate to ROOT viewport so that this code works for example(figure6.25)
+# in 'RGraphics' package
+upViewport(0)
+grid.force()
+panelvp <- grid.grep("panel", grobs=FALSE, 
+                     viewports=TRUE, grep=TRUE)
+downViewport(panelvp)
 grid.text(paste("n =", nrow(mtcars2)),
           x=unit(1, "npc") - unit(1, "mm"), 
           y=unit(1, "npc") - unit(1, "mm"),
@@ -1728,13 +1859,13 @@ par(mar=c(5.1, 4.1, 4.1, 2.1))
 # Modified from example(barplot)
 par(mar=c(2, 3.1, 2, 2.1))
 midpts <- barplot(VADeaths, 
-                  col=gray(0.5 + 1:5/12), 
+                  col=gray(0.1 + seq(1, 9, 2)/11), 
                   names=rep("", 4))
 mtext(sub(" ", "\n", colnames(VADeaths)),
       at=midpts, side=1, line=0.5, cex=0.5)
 text(rep(midpts, each=5), apply(VADeaths, 2, cumsum) - VADeaths/2,
      VADeaths, 
-     col=rep(c("white", "black"), times=2:3), 
+     col=rep(c("white", "black"), times=3:2), 
      cex=0.8)
 par(mar=c(5.1, 4.1, 4.1, 2.1))
 
@@ -1743,7 +1874,7 @@ par(mar=c(5.1, 4.1, 4.1, 2.1))
 par(mar=c(3, 4.1, 2, 0))
      boxplot(len ~ dose, data = ToothGrowth,
              boxwex = 0.25, at = 1:3 - 0.2,
-             subset= supp == "VC", col="gray90",
+             subset= supp == "VC", col="white",
              xlab="",
              ylab="tooth length", ylim=c(0,35))
      mtext("Vitamin C dose (mg)", side=1, line=2.5, cex=0.8)
@@ -1752,7 +1883,7 @@ par(mar=c(3, 4.1, 2, 0))
 
              subset= supp == "OJ")
      legend(1.5, 9, c("Ascorbic acid", "Orange juice"), 
-            fill = c("gray90", "gray70"), 
+            fill = c("white", "gray"), 
             bty="n")
 par(mar=c(5.1, 4.1, 4.1, 2.1))
 
@@ -1776,7 +1907,7 @@ par(mar=c(0, 2, 1, 2), xpd=FALSE, cex=0.5)
      pie.sales <- c(0.12, 0.3, 0.26, 0.16, 0.04, 0.12)
      names(pie.sales) <- c("Blueberry", "Cherry",
          "Apple", "Boston Cream", "Other", "Vanilla")
-     pie(pie.sales, col = gray(seq(0.4,1.0,length=6))) 
+     pie(pie.sales, col = gray(seq(0.3,1.0,length=6))) 
 
 
 
@@ -1951,10 +2082,9 @@ year <- c(1993, 1996, 1998, 2001)
 minpop <- c(20, 50, 50, 115)
 maxpop <- c(50, 240, 240, 150)
 
-
-tiger <- grImport::readPicture(system.file("extra", "tiger.ps.xml", 
-                                 package="RGraphics"))[-1]
-
+PostScriptTrace(system.file("extra", "tiger.ps", 
+                            package="RGraphics"))
+tiger <- grImport::readPicture("tiger.ps.xml")[-1]
 
 
 source(system.file("extra", "grayify.R", package="RGraphics"))
@@ -2004,7 +2134,6 @@ figure1.5 <- function() {
 #
 
 
-
 trellis.par.set(list(fontsize=list(text=6),
 	             par.xlab.text=list(cex=1.5),
                      add.text=list(cex=1.5),
@@ -2030,7 +2159,6 @@ figure1.6 <- function() {
 # Wickham's book "ggplot2"
 #
 
-
 print(
 ggplot(data=ggplot2::mpg, aes(x=displ, y=hwy, shape=factor(cyl))) + 
     geom_point() +
@@ -2047,7 +2175,6 @@ figure1.7 <- function() {
 #
 # Comment:
 #
-# A bit of mucking around is required to get the second (whole-world)
 # map positioned correctly;  this provides an example of calling a 
 # plotting function to perform calculations but do no drawing (see the
 # second call to the map() function).
@@ -2055,11 +2182,8 @@ figure1.7 <- function() {
 # Makes use of the "maps", "mapdata", and "mapproj" packages to draw the maps.
 #
 
-
-
-
 par(mar=rep(1, 4))
-maps::map("nzHires", fill=TRUE, col="gray80",
+maps::map("mapdata::nzHires", fill=TRUE, col="gray80",
     regions=c("North Island", "South Island", "Stewart Island"))
 points(174.75, -36.87, pch=16, cex=2,
        col=rgb(0,0,0,.5))
@@ -2081,29 +2205,27 @@ plot.window(xlim=xrange,
             ylim=yrange)
 maps::map(projection="sp_mercator", wrap=TRUE, lwd=0.5, ylim=c(-60, 75),
     interior=FALSE, orientation=c(90, 180, 0), add=TRUE)
-symbols(-.13, -0.8, circles=1, inches=0.1, add=TRUE)
+symbols(-.13, -0.8, circles=1, inches=0.1, add=TRUE, bg=rgb(0,0,0,.2))
 box()
-
 
 
 }
 figure1.8 <- function() {
-
-quantmod::getSymbols("YHOO")
-quantmod::chartSeries(YHOO, subset='last 4 months'
+notrun <- function() {
+    # 'AABA' distributed with 'RGraphics' package 
+    quantmod::getSymbols("AABA")
+    dump("AABA", "AABA.R")
+}
+quantmod::chartSeries(AABA, subset='2007::2008-01'
  )
-
-
 
 
 }
 figure1.9 <- function() {
 
-
 # CLASSIFICATION
 # fitting
-
-data("GlaucomaM", envir=environment())
+data("GlaucomaM", package = "TH.data", envir=environment())
 glau <- GlaucomaM
 levels(glau$Class) <- c("glau", "norm")
 fm.class <- party::ctree(Class ~ ., data = glau)
@@ -2616,97 +2738,218 @@ lines(XX, YY, type="l")
 
 }
 figure1.12 <- function() {
-
-
-#
-# Comment:
-#
-# Code by Steve Miller 
-# (Graduate student in the Statistics Department, The University of Auckland).
-#
-# An example of a one-off image using the traditional graphics system.  
-# All parameters are hard-coded and the image only looks right when 
-# drawn with a specific aspect ratio (4:1).
-#
-# Also an example of drawing an empty plot with a specific coordinate system
-# and then building up a final image by drawing individual lines and
-# and pieces of text.
-# 
-# Small point of interest is the use of some special glyphs (e.g., treble
-# clef) from the Hershey vector fonts.
-#
-
-
-
-# TOP: music
-par(yaxt = "n", xaxt = "n", ann = F, fig = c(0, 1, 0, 1), 
-    mar = c(0, 0, 0, 0), cex=0.5)
-plot(1:10, type = "n", xlab = "", ylab = "")
-title(main = "A Little Culture", line = -1)
-E = 5; F = 5.2; G = 5.4; A = 5.6; B = 5.8; C = 6; D = 6.2; E2 = 6.4; F2 = 6.6
-
-# stave
-for (i in c(E, G, B, D, F2)) {
-	lines(x = c(1, 10), y = rep(i, 2))
+ uoaBlue <- "#00467f"
+uoaLCH <- colorspace::coords(as(colorspace::hex2RGB(uoaBlue), "polarLUV")) 
+ hues <- c(uoaLCH[3], uoaLCH[3] + 90, uoaLCH[3] + 180, uoaLCH[3] + 270)
+darks <- hcl(hues, uoaLCH[2], uoaLCH[1])
+lights <- hcl(hues, uoaLCH[2], 80)
+arr <- arrow(length=unit(2, "mm"), type="closed")
+document <- function(label, x=.5, y=.5,
+                     w=unit(2, "cm"), h=unit(3, "cm"), d=unit(6, "mm"),
+                     ann=TRUE, border=NA, fill=NULL, name="script") {
+    if (is.null(fill)) {
+        fill=lights[1]
+    }
+    pushViewport(viewport(x, y, w, h, name="scriptvp"))
+    grid.polygon(unit.c(unit(0, "npc"),
+                        unit(0, "npc"),
+                        unit(1, "npc"),
+                        unit(1, "npc"),
+                        d,
+                        d,
+                        unit(0, "npc")),
+                 unit.c(unit(1, "npc") - d,
+                        unit(0, "npc"),
+                        unit(0, "npc"),
+                        unit(1, "npc"),
+                        unit(1, "npc"),
+                        unit(1, "npc") - d,
+                        unit(1, "npc") - d),
+                 gp=gpar(col=border, fill=fill),
+                 name=name)
+    grid.polygon(unit.c(unit(0, "npc"),
+                        d,
+                        d),
+                 unit.c(unit(1, "npc") - d,
+                        unit(1, "npc") - d,
+                        unit(1, "npc")),
+                 gp=gpar(col=NA, fill=darks[1]))
+    grid.text(label)
+    if (ann) {
+        grid.rect(y=0, height=unit(2, "lines"), just="top",
+                  gp=gpar(col=NA, fill=darks[1]))
+        grid.segments(0, 0, 1, 0, gp=gpar(col="white", lwd=2))
+        grid.text("SCRIPT", gp=gpar(col="white"),
+                  y=unit(-1, "lines"))
+    }
+    upViewport()
 }
-
-# Hershey characters (treble clef, crotchet rest, sharp)
-s1 = list(x = 1.2, y = G) #place clef on G
-text(list(x = c(s1$x, s1$x + 8.5, s1$x + .5), y = c(s1$y, s1$y + .4, F2)), 
-     vfont = c("serif", "plain"), 
-     labels = c("\\#H2330", "\\#H2378", "\\#H2323"), 
-     cex = 2) 
-
-# time signature
-text(x = rep(s1$x + .3, 2), y = c(s1$y, s1$y + .8), 
-     labels = c("4", "4"), cex = 0.8)
-
-# notes
-points(list(y = c(B, A, G, A, B, B, B), 
-            x = c(s1$x + 1, s1$x + 2, s1$x + 3, s1$x + 4, s1$x + 5.5, 
-                  s1$x + 6.5, s1$x + 7.5)), 
-       pch = 16, cex = 1.2)
-
-# note tails
-tail = 1.05
-for (n in c(B, A, G, A)) {
-  lines(x = rep(s1$x + tail, 2), y = c(n, n + 1))
-  tail = tail + 1
+module <- function(label, nin, nout,
+                   x=.5, y=.5, w=unit(3, "cm"), h=unit(4, "cm"),
+                   ann=TRUE, border=NA,
+                   labelin=TRUE, labelout=TRUE, inoutext=.2,
+                   arrowsin=TRUE, arrowsout=TRUE) {
+    pushViewport(viewport(x, y, w, h, name="modulevp"))
+    grid.rect(gp=gpar(col=border, 
+ fill=lights[2]))
+    document(label, ann=FALSE, border=darks[1], name=label)
+    if (arrowsin) {
+        arrin <- arr
+    } else {
+        arrin <- NULL
+    }
+    if (arrowsout) {
+        arrout <- arr
+    } else {
+        arrout <- NULL
+    }
+    if (nin > 0) {
+        grid.segments(-inoutext, 1:nin/(nin+1),
+                      grobX(rectGrob(vp="scriptvp"), 180), 1:nin/(nin+1),
+                      gp=gpar(lwd=3, col="black"), arrow=arrin)
+        if (is.character(labelin)) {
+            lab <- labelin
+            fam <- "mono"
+        } else if (labelin) {
+            lab <- "IN"
+            fam <- "sans"
+        } else {
+            lab <- NULL
+        }
+        if (!is.null(lab)) {
+            grid.text(lab, unit(-inoutext, "npc") - unit(2, "mm"),
+                      1:nin/(nin+1),
+                      just="right", gp=gpar(cex=.7, fontfamily=fam))
+        }
+    }
+    if (nout > 0) {
+        grid.segments(grobX(rectGrob(vp="scriptvp"), 0),
+                      1:nout/(nout+1), 1 + inoutext, 1:nout/(nout+1),
+                      gp=gpar(lwd=3, col="black"), arrow=arrout)
+        if (is.character(labelout)) {
+            lab <- labelout
+            fam <- "mono"
+        } else if (labelout) {
+            lab <- "OUT"
+            fam <- "sans"
+        } else {
+            lab <- NULL
+        }
+        if (!is.null(lab)) {
+            grid.text(lab, unit(1 + inoutext, "npc") + unit(2, "mm"),
+                      1:nout/(nout+1),
+                      just="left", gp=gpar(cex=.7, fontfamily=fam))
+        }
+    }
+    if (ann) {
+        grid.rect(y=0, height=unit(2, "lines"), just="top",
+                  gp=gpar(col=NA, fill=darks[2]))
+        grid.segments(0, 0, 1, 0, gp=gpar(col="white", lwd=2))
+        grid.text("MODULE", gp=gpar(col="white"),
+                  y=unit(0, "npc") - unit(1, "lines"))
+    }
+    upViewport()
 }
-
-tail = tail + .5
-for (n in c(B, B, B)) {
-  lines(x = rep(s1$x + tail, 2), y = c(n, n + 1))
-  tail = tail + 1
+pipeline <- function(x=.5, y=.5, width=unit(10, "cm"), height=unit(6, "cm"),
+                     modules=TRUE) {
+    pushViewport(viewport(x, y, width=width, height=height,
+                          name="pipelinevp"))
+    grid.rect(gp=gpar(col=NA, fill=lights[4]))
+    if (modules) {
+        module("R", 1, 2, x=1/4, labelout=FALSE, inoutext=.5, arrowsout=FALSE,
+               ann=FALSE, border=darks[2])
+        module("Python", 2, 1, x=3/4, labelin=FALSE, inoutext=.5,
+               ann=FALSE, border=darks[2])
+    }
+    grid.rect(y=0, height=unit(2, "lines"), just="top",
+#               gp=gpar(col=NA, fill=hcl(hue, sat, 40, trans)))
+              gp=gpar(col=NA, fill=darks[4]))
+    grid.segments(0, 0, 1, 0, gp=gpar(col="white", lwd=2))
+    grid.text("PIPELINE", gp=gpar(col="white"),
+              y=unit(0, "npc") - unit(1, "lines"))
+    upViewport()
 }
-
-# bar lines
-lines(x = rep(1, 2), y = c(E, F2))
-lines(x = rep(s1$x + 4.75, 2), y = c(E, F2))
-lines(x = rep(9.9, 2), y = c(E, F2))
-lines(x = rep(10, 2), y = c(E, F2), lwd = 2)
-
-# lyrics
-text(x = seq(s1$x + 1, s1$x + 8.5, by = 0.5), y = rep(4, 16), 
-     labels = c("Ma-", "", "ry", "", "had", "", "a", "", "", 
-                "lit-", "", "tle", "", "lamb", "", ""), 
-     cex = 1, font = 4)
-
+# grid.newpage()
+pipeline(modules=FALSE, width=unit(10, "cm"), height=unit(10, "cm"))
+downViewport("pipelinevp")
+# Module 1
+module("R", 0, 0, x=.2, labelin=FALSE, labelout=FALSE,
+       ann=FALSE, border=darks[2])
+downViewport("scriptvp")
+# inputs
+document(".csv", x=-.95, y=.4,
+         w=unit(1, "cm"), h=unit(1.5, "cm"), d=unit(3, "mm"),
+         ann=FALSE, border="black", fill="grey80")
+grid.segments(-.55, .4, 0, .4, arrow=arr, gp=gpar(lwd=3))
+# outputs
+grid.curve(1, .7, 1.6, .9, arrow=arr, gp=gpar(lwd=3))
+grid.rect(x=1.6, y=1.05, width=unit(1, "cm"), height=unit(1, "lines"),
+          gp=gpar(fill="black"))
+grid.text("01011", x=1.6, y=1.05,
+          gp=gpar(cex=.7, fontfamily="mono", col="white"))
+upViewport(2) # script
+# MARK
+memtopx <- convertX(grobX(nullGrob(x=1.6, y=1.2, vp=vpPath("modulevp", "scriptvp")), 0),
+                    "in")
+memtopy <- convertY(grobY(nullGrob(x=1.6, y=1.2, vp=vpPath("modulevp", "scriptvp")), 0),
+                    "in")
+csvbotx <- convertX(grobX(nullGrob(x=1.9, y=-.5, vp=vpPath("modulevp", "scriptvp")), 0),
+                    "in")
+csvboty <- convertY(grobY(nullGrob(x=1.9, y=-.5, vp=vpPath("modulevp", "scriptvp")), 0),
+                    "in")
+downViewport("scriptvp")
+grid.curve(1, .3, 1.9, .1, curv=-1, arrow=arr, gp=gpar(lwd=3))
+document(".csv", x=1.9, y=-.2,
+         w=unit(1, "cm"), h=unit(1.5, "cm"), d=unit(3, "mm"),
+         ann=FALSE, border="black", fill="grey80")
+upViewport(2) # script
+# Module 2
+module("R", 0, 0, x=.65, y=.75, labelin=FALSE, labelout=FALSE,
+       ann=FALSE, border=darks[2])
+grid.curve(memtopx, memtopy,
+           grobX(rectGrob(vp=vpPath("modulevp", "scriptvp")), 180),
+           grobY(rectGrob(vp=vpPath("modulevp", "scriptvp")), 180),
+           curv=-1, arrow=arr, gp=gpar(lwd=3))
+downViewport("scriptvp")
+grid.curve(1, .7, 1.75, .5, curv=-1, arrow=arr, gp=gpar(lwd=3))
+document(".xml", x=1.75, y=.2,
+         w=unit(1, "cm"), h=unit(1.5, "cm"), d=unit(3, "mm"),
+         ann=FALSE, border="black", fill="grey80")
+grid.curve(1.75, -.1, .2, -.5, curv=-1, inflect=TRUE, gp=gpar(lwd=3))
+upViewport(2) # script
+# MARK
+curvex <- convertX(grobX(nullGrob(x=.2, y=-.5, vp=vpPath("modulevp", "scriptvp")), 0),
+                    "in")
+curvey <- convertY(grobY(nullGrob(x=.2, y=-.5, vp=vpPath("modulevp", "scriptvp")), 0),
+                    "in")
+# Module 3
+module("Python", 0, 0, x=.8, y=.25, labelin=FALSE, labelout=FALSE,
+       ann=FALSE, border=darks[2])
+grid.curve(csvbotx, csvboty,
+           grobX(rectGrob(vp=vpPath("modulevp", "scriptvp")), 220),
+           grobY(rectGrob(vp=vpPath("modulevp", "scriptvp")), 220),
+           curv=1, arrow=arr, gp=gpar(lwd=3))
+grid.curve(curvex, curvey,
+           grobX(rectGrob(vp=vpPath("modulevp", "scriptvp")), 160),
+           grobY(rectGrob(vp=vpPath("modulevp", "scriptvp")), 160),
+           curv=1, arrow=arr, gp=gpar(lwd=3))
+downViewport("scriptvp")
+grid.segments(1, .4, 1.55, .4, arrow=arr, gp=gpar(lwd=3))
+document(".pdf", x=1.95, y=.4,
+         w=unit(1, "cm"), h=unit(1.5, "cm"), d=unit(3, "mm"),
+         ann=FALSE, border="black", fill="grey80")
+upViewport(2) # script
+upViewport() # pipeline
 
 
 }
 figure1.13 <- function() {
-
-
-pic <- pixmap::read.pnm(system.file("extra", "AfterTheBombs.pnm", 
-                                    package="RGraphics"))
-
-source(system.file("extra", "as.raster.R", package="RGraphics"))
+pic <- jpeg::readJPEG(system.file("extra", "AfterTheBombs.jpg", 
+                            package="RGraphics"))
 
 w <- 1024 # 578
 h <- 768 # 500
-picRaster <- as.raster(pic)
-bg <- picRaster # [1:h, (1024 - w):1024]
+bg <- pic # [1:h, (1024 - w):1024]
 
 unknown <- 8.7
 total <- 9.1
@@ -2773,361 +3016,371 @@ popViewport(2)
 
 
 }
-figure11.1 <- function() {
+figure13.1 <- function() {
 
 
 
-
-par(mar=rep(1, 4))
-par(mfrow=c(1, 2))
-plot(faithful)
-gplots::textplot(capture.output(summary(faithful)))
-
-
-
-
-}
-figure11.2 <- function() {
-
-
-
-
-
-par(mar=rep(1, 4))
-plot(pressure)
-plotrix::addtable2plot(0, 300, pressure[13:19, ])
-
-
+print(
+bwplot(voice.part ~ height, data=lattice::singer, 
+       xlab="Height (inches)",
+       par.settings=list(box.rectangle=list(col="black"), 
+                         box.umbrella=list(col="black"), 
+                         plot.symbol=list(col="black")))
+)
+# grid.ls()
+# Looks like boxes are all called <something>bwplot.box.polygon<something>
+# Create linear gradient
+fill <- linearGradient(c("black", "white"),
+                       y0=.5, y1=.5,
+                       gradientUnits="coords")
+# Register gradient now so it applies to the whole page
+registerGradientFill("br", fill)
+# Fill each box with gradient
+grid.gradientFill("bwplot.box.polygon", label=rep("br", 17), grep=TRUE,
+                  group=FALSE)
 
 
 }
-figure11.3 <- function() {
+figure13.2 <- function() {
 
-
-
-
-gridExtra::grid.table(pressure[13:19, ], show.box=TRUE, 
-           separator="black")
-
-
-
-
-}
-figure11.4 <- function() {
-
-
-
-
-
-
-
-
-
-par(mar=rep(1, 4))
-x <- rnorm(20)
-y <- rnorm(20)
-plot(x, y, pch=16, col="gray")
-
-xy <- plotrix::emptyspace(x, y)
-text(xy, label="largest\nempty\nregion")
-
-xy2 <- Hmisc::largest.empty(x, y, 1, 1)
-rect(xy2$x - .5, xy2$y - .5, 
-     xy2$x + .5, xy2$y + .5)
-
-
+bwplot(voice.part ~ height, data=lattice::singer, 
+       xlab="Height (inches)",
+       par.settings=list(box.rectangle=list(col="black"), 
+                         box.umbrella=list(col="black"), 
+                         plot.symbol=list(col="black")))
+grid.export()
 
 
 }
-figure11.5 <- function() {
-x <- runif(10)
-y <- rnorm(10)
+figure13.3 <- function() {
+gradient <- linearGradient(c("black", "white", "black"), 
+                           x0=0, y0=.5, x1=1, y1=.5)
 
 
+grid.rect(name="r")
 
 
+gradient <- linearGradient(c("black", "white", "black"), 
+                           x0=0, y0=.5, x1=1, y1=.5)
 
 
+grid.gradientFill("r", gradient)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-par(mar=c(1, 1, 2, 1))
-plot(x, y, pch=21, bg="gray", ylim=c(-3, 3), asp=1)
-plotrix::spread.labels(x, y, labels=1:10)
-
-mtext("spread.labels", side=3, line=0)
-
-
-
-par(mar=c(1, 1, 2, 1))
-plot(x, y, pch=21, bg="gray",  
-     ylim=c(-2, 3), xlim=c(-.5, 1.5))
-plotrix::thigmophobe.labels(x, y, labels=1:10)
-
-mtext("thigmophobe.labels", side=3, line=0)
-
-
-
-par(mar=c(1, 1, 2, 1))
-plot(x, y, pch=21, bg="gray", ylim=c(-3, 3), asp=1)
-adjy <- TeachingDemos::spread.labs(y, strheight("10", cex=1.5))
-text(-0.5, adjy, labels=1:10, pos=2)
-segments(-0.5, adjy, x, y)
-
-mtext("spread.labs", side=3, line=0)
-
-
-
-par(mar=c(1, 1, 2, 1))
-plot(x, y, pch=16, col="gray", ylim=c(-2, 3), xlim=c(-.5, 1.5))
-maptools::pointLabel(x, y, labels=as.character(1:10))
-
-mtext("pointLabel", side=3, line=0)
-
-
-
-par(mar=c(1, 1, 2, 1))
-sx <- sort(x)
-sy <- sort(y)
-lines <- list(A=list(x=sx, y=y, lty=1), 
-              B=list(x=sx, y=sy, lty=2),
-              C=list(x=sx, y=rev(y), lty=3), 
-              D=list(x=sx, y=rev(sy), lty=4))
-
-plot(x, y, type="n", ylim=c(-3, 3))
-lapply(lines, function(l) do.call("lines", l))
-Hmisc::labcurve(lines)
-
-mtext("labcurve", side=3, line=0)
+grid.export()
 
 
 }
-figure11.6 <- function() {
+figure13.4 <- function() {
+grid.rect(name="r1")
+rg1 <- radialGradient(c("white", "black"))
+grid.gradientFill("r1", rg1)
 
 
+grid.rect(name="r2")
+rg2 <- radialGradient(c("white", "black", "white"),
+                      stops=c(0, .25, 1),
+                      fx=.25, fy=.5)
+grid.gradientFill("r2", rg2)
 
 
-
-
-
-
-
-par(mar=rep(0, 4))
-plot.new()
-plot.window(0:1, c(.1, 1))
-plotrix::draw.circle(.1, .9, radius=1:5/100)
-plotrix::draw.arc(.3, .9, radius=1:5/100, 
-         deg1=45, deg2=seq(360, 160, -50))
-plotrix::arctext("arctext", center=c(.5, .85), radius=.05,
-        stretch=1.2)
-
-text(.1, .8, "draw.circle")
-text(.3, .8, "draw.arc")
-plotrix::boxed.labels(.7, .85, "boxed.labels", bg="gray90")
-plotrix::textbox(c(.85, 1), .9, "this is a textbox .")
-
-plotrix::gradient.rect(.05, .5, .15, .7, col=gray(0:20/21))
-plotrix::cylindrect(.25, .5, .35, .7, "black")
-plotrix::rectFill(.45, .5, .55, .7, pch=16)
-
-text(.1, .45, "gradient.rect")
-text(.3, .45, "cylindrect")
-text(.5, .45, "rectFill")
-x <- c(.65, .65, .75, .75)
-y <- c(.5, .7, .7, .5)
-plotrix::polygon.shadow(x, y, offset=c(2/100, -2/100))
-polygon(x, y, col="white")
-
-text(.7, .45, "polygon.shadow")
-TeachingDemos::shadowtext(.9, .6, "shadowtext")
-
-TeachingDemos::my.symbols(seq(.3, .7, .2), .3,
-           TeachingDemos::ms.male, inches=.2)
-TeachingDemos::my.symbols(c(.4, .6), .3,
-           TeachingDemos::ms.female, inches=.2)
-
-text(.5, .2, "my.symbols")
-box(col="gray")
-
+# grid.newpage()
+pushViewport(viewport(x=1/4, width=.4, height=.8))
+grid.rect(name="r1")
+rg1 <- radialGradient(c("white", "black"))
+grid.gradientFill("r1", rg1)
+popViewport()
+pushViewport(viewport(x=3/4, width=.4, height=.8))
+grid.rect(name="r2")
+rg2 <- radialGradient(c("white", "black", "white"),
+                      stops=c(0, .25, 1),
+                      fx=.25, fy=.5)
+grid.gradientFill("r2", rg2)
+popViewport()
 
 
 }
-figure11.7 <- function() {
-# library(gridExtra)
-# 
-# 
-# 
-# gridExtra::grid.ellipse(x=1:6/7, y=rep(.8, 6), size=.1, 
-#              default.units="npc", size.unit="npc", 
-#              ar=1:6, angle=1:6*15/180*pi)
-# grid.text("grid.ellipse", y=.7)
-# gridExtra::grid.pattern(x=1:6/7, y=.5, width=unit(.1, "npc"),
-#              height=unit(.1, "npc"), pattern=1:6,
-#              motif.cex=.7, gp=gpar(fill="gray80"))
-# 
-# grid.text("grid.pattern", y=.4)
-# gridExtra::grid.barbed(1:6/7, y=rep(c(.15, .25), 3), 
-#             size=unit(.05, "snpc"), 
-#             pch=21, gp=gpar(fill="gray"))
-# 
-# grid.text("grid.barbed", y=.1)
-# grid.rect(gp=gpar(col="gray", fill=NA))
-# 
-# 
-# 
-}
-figure11.8 <- function() {
+figure13.5 <- function() {
+dots <- pattern(circleGrob(r=.3, gp=gpar(fill="black")))
 
 
+grid.rect(name="r1")
+grid.patternFill("r1", dots)
 
 
-gplots::plotmeans(mpg ~ cyl, mtcars, 
-          barcol="black", n.label=FALSE, connect=FALSE)
+dotgrid <- pattern(circleGrob(r=.3, gp=gpar(fill="black")),
+                   x=.5, y=.5, 
+                   width=unit(1, "cm"), height=unit(1, "cm"))
+grid.rect(name="r2")
+grid.patternFill("r2", dotgrid)
 
+
+# grid.newpage()
+pushViewport(viewport(x=1/4, width=.4, height=.8))
+grid.rect(name="r1")
+grid.patternFill("r1", dots)
+popViewport()
+pushViewport(viewport(x=3/4, width=.4, height=.8))
+dotgrid <- pattern(circleGrob(r=.3, gp=gpar(fill="black")),
+                   x=.5, y=.5, 
+                   width=unit(1, "cm"), height=unit(1, "cm"))
+grid.rect(name="r2")
+grid.patternFill("r2", dotgrid)
+popViewport()
 
 
 }
-figure11.9 <- function() {
+figure13.6 <- function() {
+c <- circleGrob(r=.25, gp=gpar(col=NA, fill="white"))
+r <- rectGrob(x=c(1, 1, 3, 3)/4, y=c(1, 3, 3, 1)/4,
+              width=.3, height=.3, 
+              gp=gpar(col=NA, fill="grey"))
+p <- pattern(gTree(children=gList(r, c)),
+             x=.5, y=.5, 
+             width=unit(2, "cm"), height=unit(2, "cm"))
+grid.rect(name="r3")
+grid.patternFill("r3", p)
 
 
 
-
-grid.rect(1:10/11, .75, width=1/15, height=1/3,
-          gp=gpar(col=NA,
-            fill=colorspace::sequential_hcl(10, 0, 0, c(20, 90))))
-
-grid.rect(1:10/11, .25, width=1/15, height=1/3,
-          gp=gpar(col=NA,
-            fill=colorspace::diverge_hcl(10, 0, 0, c(20, 90))))
-
-grid.rect(gp=gpar(col="gray", fill=NA))
+cxc <- ggplot(mtcars, aes(x = factor(cyl))) +
+       geom_bar(width = 1, colour = "black") +
+       coord_polar(theta = "y")
+gg <- ggplotGrob(cxc)
+p <- pattern(gg, x=.5, y=.5, 
+             width=unit(4, "cm"), height=unit(4, "cm"))
+grid.rect(name="r4")
+grid.patternFill("r4", p)
 
 
+# grid.newpage()
+pushViewport(viewport(x=1/4, width=.4, height=.8))
+c <- circleGrob(r=.25, gp=gpar(col=NA, fill="white"))
+r <- rectGrob(x=c(1, 1, 3, 3)/4, y=c(1, 3, 3, 1)/4,
+              width=.3, height=.3, 
+              gp=gpar(col=NA, fill="grey"))
+p <- pattern(gTree(children=gList(r, c)),
+             x=.5, y=.5, 
+             width=unit(2, "cm"), height=unit(2, "cm"))
+grid.rect(name="r3")
+grid.patternFill("r3", p)
+popViewport()
+pushViewport(viewport(x=3/4, width=.4, height=.8))
 
-}
-figure11.10 <- function() {
-
-
-
-
-
-
-
-
-
-par(mar=rep(1, 4))
-plot(rnorm(100), rnorm(100), pch=16, col="gray",
-     ann=FALSE, axes=FALSE)
-box()
-
-plotrix::corner.label("top-left", x=-1, y=1)
-
-gplots::smartlegend(x="right", y="top", 
-            legend="top-right", pch=16, 
-            col="gray", bg="white")
-
-text(grconvertX(1, "npc"), grconvertY(0, "npc"), 
-     adj=c(1, 0), labels="bottom-right")
-
-
-
-
-}
-figure11.11 <- function() {
-
-
-
-
-plot(window(Nile, 1920, 1940))
-TeachingDemos::subplot({ plot(Nile, axes=FALSE, ann=FALSE)
-          rect(1920, 0, 1940, 2000, border=NA, col="gray")
-          box()
-          lines(Nile) }, 
-        x=1920, y=1000, size=c(1.5, .75), hadj=0)
-
+cxc <- ggplot(mtcars, aes(x = factor(cyl))) +
+       geom_bar(width = 1, colour = "black") +
+       coord_polar(theta = "y")
+gg <- ggplotGrob(cxc)
+p <- pattern(gg, x=.5, y=.5, 
+             width=unit(4, "cm"), height=unit(4, "cm"))
+grid.rect(name="r4")
+grid.patternFill("r4", p)
+popViewport()
 
 
 }
-figure11.12 <- function() {
-kelvin <- pressure$temperature + 273.15
+figure13.7 <- function() {
+feSimple <- filterEffect(feGaussianBlur(sd=3))
+grid.rect(name="r1", width=.8, height=.8)
+grid.filter("r1", feSimple)
 
 
+offset <- feOffset("SourceAlpha", result="offOut",
+                   dx=unit(2, "mm"), dy=unit(-2, "mm"))
+blur <- feGaussianBlur("offOut", sd=3, result="gaussOut")
+blend <- feBlend("SourceGraphic", "gaussOut")
+feComplex <- filterEffect(list(offset, blur, blend))
+grid.rect(name="r2", width=.8, height=.8,
+          gp=gpar(fill="white"))
+grid.filter("r2", feComplex) 
 
 
-
-
-
-
-with(pressure,
-     {
-         plot(temperature, pressure, axes=FALSE)
-         axis(2)
-         box()
-         staxlab(1, at=temperature, cex=.7)
-     })
-
-
-
-with(pressure,
-     {
-         plot(kelvin, pressure, xlim=c(250, 650))
-         axis.break(1)
-     })
+# grid.newpage()
+pushViewport(viewport(x=1/4, width=.4, height=.8))
+feSimple <- filterEffect(feGaussianBlur(sd=3))
+grid.rect(name="r1", width=.8, height=.8)
+grid.filter("r1", feSimple)
+popViewport()
+pushViewport(viewport(x=3/4, width=.4, height=.8))
+offset <- feOffset("SourceAlpha", result="offOut",
+                   dx=unit(2, "mm"), dy=unit(-2, "mm"))
+blur <- feGaussianBlur("offOut", sd=3, result="gaussOut")
+blend <- feBlend("SourceGraphic", "gaussOut")
+feComplex <- filterEffect(list(offset, blur, blend))
+grid.rect(name="r2", width=.8, height=.8,
+          gp=gpar(fill="white"))
+grid.filter("r2", feComplex) 
+popViewport()
 
 
 }
-figure11.13 <- function() {
-kelvin <- pressure$temperature + 273.15
+figure13.8 <- function() {
+gradient <- linearGradient(c("black", "white", "black"), 
+                           x0=0, y0=.5, x1=1, y1=.5)
 
 
+grid.rect(name="r1")
+grid.gradientFill("r1", gradient)
+cp <- clipPath(circleGrob())
+grid.clipPath("r1", cp)
 
 
+grid.rect(name="r2")
+grid.gradientFill("r2", gradient)
+cp <- clipPath(circleGrob(x=1:3/4, r=.3))
+grid.clipPath("r2", cp)
 
 
+# grid.newpage()
+pushViewport(viewport(x=1/4, width=.4, height=.8))
+grid.rect(gp=gpar(col="grey"))
+grid.rect(name="r1")
+grid.gradientFill("r1", gradient)
+cp <- clipPath(circleGrob())
+grid.clipPath("r1", cp)
+popViewport()
+pushViewport(viewport(x=3/4, width=.4, height=.8))
+grid.rect(gp=gpar(col="grey"))
+grid.rect(name="r2")
+grid.gradientFill("r2", gradient)
+cp <- clipPath(circleGrob(x=1:3/4, r=.3))
+grid.clipPath("r2", cp)
+popViewport()
 
 
+}
+figure13.9 <- function() {
+gradient <- linearGradient(c("black", "white", "black"), 
+                           x0=0, y0=.5, x1=1, y1=.5)
 
 
+circlesOnBlack <- 
+    gTree(children=gList(rectGrob(gp=gpar(fill="black")),
+                         circleGrob(x=1:3/4, r=.3, 
+                                    gp=gpar(col=NA,
+                                            fill="white"))))
+m <- mask(circlesOnBlack)
 
 
-with(pressure,
-     revaxis(temperature, pressure))
+grid.rect(name="r2")
+grid.gradientFill("r2", gradient)
+grid.mask("r2", m)
 
 
+# grid.newpage()
+pushViewport(viewport(x=1/4, width=.4, height=.8))
+grid.rect(gp=gpar(col="grey"))
+grid.draw(circlesOnBlack)
+popViewport()
+pushViewport(viewport(x=3/4, width=.4, height=.8))
+grid.rect(gp=gpar(col="grey"))
+grid.rect(name="r2")
+grid.gradientFill("r2", gradient)
+grid.mask("r2", m)
+popViewport()
 
-plot(kelvin, pressure$pressure)
-TeachingDemos::updateusr(c(0, 1), 0:1, c(-273.15, -272.15), 0:1)
-abline(v=100)
-text(x=100, y=700, " water boils", adj=0)
+
+}
+figure13.10 <- function() {
+gradient <- linearGradient(c("black", "white", "black"), 
+                           x0=0, y0=.5, x1=1, y1=.5)
 
 
+circlesOnBlack <- 
+    gTree(children=gList(rectGrob(gp=gpar(fill="black")),
+                         circleGrob(x=1:3/4, r=.3, 
+                                    gp=gpar(col=NA,
+                                            fill="white"))))
+m <- mask(circlesOnBlack)
 
-pdf("Figures/extra-zoomplot-%d.pdf", onefile=FALSE,
-    width=4, height=4)
-dev.control("enable")
-plot(pressure)
-TeachingDemos::zoomplot(c(0, 150), c(0, 3))
 
+grayGradient <-
+    gTree(children=gList(gradientFillGrob(rectGrob(), 
+                                          gradient)))
+m <- mask(grayGradient)
+
+
+masked <- maskGrob(circlesOnBlack, m)
+grid.draw(masked)
+
+
+# grid.newpage()
+pushViewport(viewport(x=1/4, width=.4, height=.8))
+grid.rect(gp=gpar(col="grey"))
+grid.draw(grayGradient)
+popViewport()
+pushViewport(viewport(x=3/4, width=.4, height=.8))
+grid.rect(gp=gpar(col="grey"))
+masked <- maskGrob(circlesOnBlack, m)
+grid.draw(masked)
+popViewport()
+
+
+}
+figure13.11 <- function() {
+gradientBBox <- linearGradient(c("black", "white", "black"), 
+                               gradientUnits="bbox",
+                               x0=0, y0=.5, x1=1, y1=.5)
+
+
+grid.rect(1:2/3, 1:2/3, width=1/3, height=.2, name="r2")
+grid.gradientFill("r2", gradientBBox)
+grid.export()
+
+
+}
+figure13.12 <- function() {
+gradientPage <- linearGradient(c("black", "white", "black"), 
+                           gradientUnits="coords",
+                           x0=0, y0=.5, x1=1, y1=.5)
+
+
+grid.rect(1:2/3, 1:2/3, width=1/3, height=.2, name="r2")
+grid.gradientFill("r2", gradientPage)
+grid.export()
+
+
+}
+figure13.13 <- function() {
+gradientPage <- linearGradient(c("black", "white", "black"), 
+                           gradientUnits="coords",
+                           x0=0, y0=.5, x1=1, y1=.5)
+
+
+pushViewport(viewport(width=1/3, name="vp"))
+registerGradientFill("g", gradientPage)
+upViewport()
+grid.rect(1:2/3, 1:2/3, width=1/3, height=.2, name="r2")
+grid.gradientFill("r2", label="g")
+grid.export()
+
+
+}
+figure13.14 <- function() {
+stacks <- getSVGFonts()
+stacks
+
+
+stacks$serif <- c("Satisfy", "serif")
+setSVGFonts(stacks)
+
+
+pdf(NULL, width=2, height=1)
+grid.text("hello", gp=gpar(fontfamily="serif"))
+svg <- grid.export(NULL)$svg
 dev.off()
-png("Web/extra-zoomplot%d.png", width=320, height=320)
-dev.control("enable")
-plot(pressure)
-TeachingDemos::zoomplot(c(0, 150), c(0, 3))
 
-dev.off()
-system("cp Web/extra-zoomplot2.png Web/extra-axisscale3.png")
 
+root <- 
+    XML::xmlRoot(svg, "svg:svg",
+            namespaces=c(svg="http://www.w3.org/2000/svg"))
+url <- 
+    "url('https://fonts.googleapis.com/css?family=Satisfy');"
+styleNode <- 
+    XML::newXMLNode("style", 
+               attrs=c(type="text/css"),
+               paste("@import", url))
+invisible(XML::newXMLNode("defs", styleNode, parent=root))
 
 
 }
@@ -3167,7 +3420,7 @@ upViewport()
 pushViewport(vpi(3))
 upViewport()
 pushViewport(vpi(5))
-upViewport(0)
+upViewport(2)
 for (i in c(1, 3, 5)) {
     grid.roundrect(height=.5,
                    vp=paste("vplay::vp", i, sep=""),
@@ -3206,9 +3459,37 @@ mtcars2$qsec <- NULL
 mpg <- mtcars2$mpg
 
 
-
 p <- ggplot(mtcars2)
 
+
+p
+
+
+print(
+p
+)
+
+
+}
+figure5.5 <- function() {
+mtcars2 <- mtcars
+mtcars2$trans <- factor(mtcars$am, 
+                        levels=0:1, 
+                        labels=c("automatic", "manual"))
+mtcars2$gear <- as.factor(mtcars$gear)
+mtcars2$am <- NULL
+mtcars2$vs <- NULL
+mtcars2$drat <- NULL
+mtcars2$carb <- NULL
+mtcars2$wt <- NULL
+mtcars2$hp <- NULL
+mtcars2$qsec <- NULL
+
+# To keep R CMD check happy
+mpg <- mtcars2$mpg
+
+
+p <- ggplot(mtcars2)
 
 
 print(
@@ -3242,7 +3523,7 @@ p + geom_point(aes(x=disp, y=mpg)) +
 
 
 }
-figure5.5 <- function() {
+figure5.6 <- function() {
 mtcars2 <- mtcars
 mtcars2$trans <- factor(mtcars$am, 
                         levels=0:1, 
@@ -3260,16 +3541,13 @@ mtcars2$qsec <- NULL
 mpg <- mtcars2$mpg
 
 
-
 p <- ggplot(mtcars2)
-
 
 
 print(
 p + geom_point(aes(x=disp, y=mpg)) +
     scale_y_continuous(name="miles per gallon") +
     scale_x_continuous(name="displacement (cu.in.)")
-
 )
 
 
@@ -3284,13 +3562,13 @@ print(
 p + geom_point(aes(x=disp, y=mpg, 
                    color=trans), size=4) +
     scale_color_manual(values=c(automatic=gray(2/3),
-                         manual=gray(1/3)))
+                                manual=gray(1/3)))
 
 )
 
 
 }
-figure5.6 <- function() {
+figure5.7 <- function() {
 # grid.newpage()
 layvp <- viewport(layout=grid.layout(1, 7,
                     heights=unit(1, "inch"),
@@ -3310,7 +3588,7 @@ upViewport()
 pushViewport(vpi(5))
 upViewport()
 pushViewport(vpi(7))
-upViewport(0)
+upViewport(2)
 for (i in c(1, 3, 5, 7)) {
     grid.roundrect(height=.5,
                    vp=paste("vplay::vp", i, sep=""),
@@ -3339,7 +3617,7 @@ grid.segments(grobX("rr5", 0), .5,
 
 
 }
-figure5.7 <- function() {
+figure5.8 <- function() {
 # grid.newpage()
 layvp <- viewport(layout=grid.layout(1, 9,
                     heights=unit(1, "inch"),
@@ -3361,7 +3639,7 @@ upViewport()
 pushViewport(vpi(7))
 upViewport()
 pushViewport(vpi(9))
-upViewport(0)
+upViewport(2)
 for (i in c(1, 3, 5, 7, 9)) {
     grid.roundrect(height=.5,
                    vp=paste("vplay::vp", i, sep=""),
@@ -3390,43 +3668,6 @@ grid.segments(grobX("rr7", 0), .5,
 
 
 }
-figure5.8 <- function() {
-mtcars2 <- mtcars
-mtcars2$trans <- factor(mtcars$am, 
-                        levels=0:1, 
-                        labels=c("automatic", "manual"))
-mtcars2$gear <- as.factor(mtcars$gear)
-mtcars2$am <- NULL
-mtcars2$vs <- NULL
-mtcars2$drat <- NULL
-mtcars2$carb <- NULL
-mtcars2$wt <- NULL
-mtcars2$hp <- NULL
-mtcars2$qsec <- NULL
-
-# To keep R CMD check happy
-mpg <- mtcars2$mpg
-
-
-
-p <- ggplot(mtcars2)
-
-
-
-print(
-p + geom_bar(aes(x=trans))
-
-)
-
-
-update_geom_defaults("smooth", aes(color="black"))
-print(
-p + geom_smooth(aes(x=disp, y=mpg))
-
-)
-
-
-}
 figure5.9 <- function() {
 mtcars2 <- mtcars
 mtcars2$trans <- factor(mtcars$am, 
@@ -3445,23 +3686,18 @@ mtcars2$qsec <- NULL
 mpg <- mtcars2$mpg
 
 
-
 p <- ggplot(mtcars2)
 
 
-
 print(
-p + geom_point(aes(x=disp, y=mpg, shape=trans)) +
-    scale_shape_manual(values=c(1, 3))
+p + geom_bar(aes(x=trans))
 
 )
 
 
+update_geom_defaults("smooth", aes(color="black"))
 print(
-ggplot(mtcars2, aes(x=disp, y=mpg)) + 
-    geom_point() +
-    stat_smooth(aes(group=trans),
-                method="lm")
+p + geom_smooth(aes(x=disp, y=mpg))
 
 )
 
@@ -3485,9 +3721,45 @@ mtcars2$qsec <- NULL
 mpg <- mtcars2$mpg
 
 
-
 p <- ggplot(mtcars2)
 
+
+print(
+p + geom_point(aes(x=disp, y=mpg, shape=trans)) +
+    scale_shape_manual(values=c(1, 3))
+
+)
+
+
+print(
+ggplot(mtcars2, aes(x=disp, y=mpg)) + 
+    geom_point() +
+    stat_smooth(aes(group=trans),
+                method="lm")
+
+)
+
+
+}
+figure5.11 <- function() {
+mtcars2 <- mtcars
+mtcars2$trans <- factor(mtcars$am, 
+                        levels=0:1, 
+                        labels=c("automatic", "manual"))
+mtcars2$gear <- as.factor(mtcars$gear)
+mtcars2$am <- NULL
+mtcars2$vs <- NULL
+mtcars2$drat <- NULL
+mtcars2$carb <- NULL
+mtcars2$wt <- NULL
+mtcars2$hp <- NULL
+mtcars2$qsec <- NULL
+
+# To keep R CMD check happy
+mpg <- mtcars2$mpg
+
+
+p <- ggplot(mtcars2)
 
 
 print(
@@ -3517,7 +3789,7 @@ p + geom_bar(aes(x=trans, fill=factor(cyl)),
 
 
 }
-figure5.11 <- function() {
+figure5.12 <- function() {
 mtcars2 <- mtcars
 mtcars2$trans <- factor(mtcars$am, 
                         levels=0:1, 
@@ -3535,18 +3807,17 @@ mtcars2$qsec <- NULL
 mpg <- mtcars2$mpg
 
 
-
 p <- ggplot(mtcars2)
-
 
 
 print(
 p + geom_point(aes(x=disp, y=mpg)) + 
-    scale_x_continuous(trans="log") +
-    scale_y_continuous(trans="log") +
+    scale_y_continuous(trans="log", 
+                       breaks=seq(10, 40, 10)) +
+    scale_x_continuous(trans="log", 
+                       breaks=seq(100, 400, 100)) +
     geom_line(aes(x=disp, y=mpg), stat="smooth", 
               method="lm")
-
 )
 
 
@@ -3556,15 +3827,13 @@ p + geom_point(aes(x=disp, y=mpg)) +
     scale_y_continuous(trans="log") +
     geom_line(aes(x=disp, y=mpg), stat="smooth", 
               method="lm") +
-    coord_trans(xtrans="exp", ytrans="exp")
-
+    coord_trans(x="exp", y="exp")
 )
 
 
 print(
 p + geom_bar(aes(x="", fill=trans)) +
     scale_fill_manual(values=gray(1:2/3))
-
 )
 
 
@@ -3577,7 +3846,7 @@ p + geom_bar(aes(x="", fill=trans)) +
 
 
 }
-figure5.12 <- function() {
+figure5.13 <- function() {
 # grid.newpage()
 layvp <- viewport(layout=grid.layout(1, 11,
                     heights=unit(1, "inch"),
@@ -3601,7 +3870,7 @@ upViewport()
 pushViewport(vpi(9))
 upViewport()
 pushViewport(vpi(11))
-upViewport(0)
+upViewport(2)
 for (i in c(1, 3, 5, 7, 9, 11)) {
     grid.roundrect(height=.5,
                    vp=paste("vplay::vp", i, sep=""),
@@ -3634,7 +3903,7 @@ grid.segments(grobX("rr9", 0), .5,
 
 
 }
-figure5.13 <- function() {
+figure5.14 <- function() {
 mtcars2 <- mtcars
 mtcars2$trans <- factor(mtcars$am, 
                         levels=0:1, 
@@ -3652,9 +3921,7 @@ mtcars2$qsec <- NULL
 mpg <- mtcars2$mpg
 
 
-
 p <- ggplot(mtcars2)
-
 
 
 print(
@@ -3664,58 +3931,6 @@ p + geom_point(aes(x=disp, y=mpg)) +
 )
 
 
-}
-figure5.14 <- function() {
-# mtcars2 <- mtcars
-# mtcars2$trans <- factor(mtcars$am, 
-#                         levels=0:1, 
-#                         labels=c("automatic", "manual"))
-# mtcars2$gear <- as.factor(mtcars$gear)
-# mtcars2$am <- NULL
-# mtcars2$vs <- NULL
-# mtcars2$drat <- NULL
-# mtcars2$carb <- NULL
-# mtcars2$wt <- NULL
-# mtcars2$hp <- NULL
-# mtcars2$qsec <- NULL
-# 
-# # To keep R CMD check happy
-# mpg <- mtcars2$mpg
-# 
-# 
-# 
-# p <- ggplot(mtcars2)
-# 
-# 
-# 
-# print(
-# p + geom_point(aes(x=disp, y=mpg)) +
-#     theme_bw()
-# 
-# )
-# 
-# 
-# print(
-# p + geom_point(aes(x=disp, y=mpg)) +
-#     opts(axis.title.y=theme_text(angle=0))
-# 
-# )
-# 
-# 
-# print(
-# p + geom_point(aes(x=disp, y=mpg)) +
-#     opts(axis.title.y=theme_blank())
-# 
-# )
-# 
-# 
-# print(
-# p + geom_point(aes(x=disp, y=mpg)) +
-#     opts(title="Vehicle Fuel Efficiency")
-# 
-# )
-# 
-# 
 }
 figure5.15 <- function() {
 mtcars2 <- mtcars
@@ -3735,9 +3950,53 @@ mtcars2$qsec <- NULL
 mpg <- mtcars2$mpg
 
 
-
 p <- ggplot(mtcars2)
 
+
+print(
+p + geom_point(aes(x=disp, y=mpg)) +
+    theme_bw()
+)
+
+
+print(
+p + geom_point(aes(x=disp, y=mpg)) +
+    theme(axis.title.y=element_text(angle=0, vjust=.5))
+)
+
+
+print(
+p + geom_point(aes(x=disp, y=mpg)) +
+    theme(axis.title.y=element_blank())
+)
+
+
+print(
+p + geom_point(aes(x=disp, y=mpg)) +
+    labs(title="Vehicle Fuel Efficiency")
+)
+
+
+}
+figure5.16 <- function() {
+mtcars2 <- mtcars
+mtcars2$trans <- factor(mtcars$am, 
+                        levels=0:1, 
+                        labels=c("automatic", "manual"))
+mtcars2$gear <- as.factor(mtcars$gear)
+mtcars2$am <- NULL
+mtcars2$vs <- NULL
+mtcars2$drat <- NULL
+mtcars2$carb <- NULL
+mtcars2$wt <- NULL
+mtcars2$hp <- NULL
+mtcars2$qsec <- NULL
+
+# To keep R CMD check happy
+mpg <- mtcars2$mpg
+
+
+p <- ggplot(mtcars2)
 
 
 print(
@@ -3770,316 +4029,43 @@ p + geom_point(aes(x=disp, y=mpg)) +
 
 
 }
-figure15.1 <- function() {
-
-
-
-
-nodes <- c("grDevices", "graphics", "grid",
-           "lattice", "ggplot2")
-edgeList <- 
-    list(grDevices=list(edges=c("graphics", "grid")),
-         graphics=list(),
-         grid=list(edges=c("lattice", "ggplot2")),
-         lattice=list(),
-         ggplot2=list())
-simpleGNEL <- new("graphNEL",
-                  nodes=nodes,
-                  edgeL=edgeList,
-                  edgemode="directed")
-
-
-
-
-# Weird stuff happening if don't pre-layout graph
-temp <- Rgraphviz::agopen(simpleGNEL, "")
-Rgraphviz::plot(temp)
+figure11.1 <- function() {
 
 
 
 }
-# placeholder
-
-
-
-figure15.3 <- function() {
-
-
-
-
-nodes <- c("grDevices", "graphics", "grid",
-           "lattice", "ggplot2")
-edgeList <- 
-    list(grDevices=list(edges=c("graphics", "grid")),
-         graphics=list(),
-         grid=list(edges=c("lattice", "ggplot2")),
-         lattice=list(),
-         ggplot2=list())
-simpleGNEL <- new("graphNEL",
-                  nodes=nodes,
-                  edgeL=edgeList,
-                  edgemode="directed")
-
-
-
-# Weird stuff happening if don't pre-layout graph
-tempGraph <- Rgraphviz::agopen(simpleGNEL, "", layoutType="neato")
-Rgraphviz::plot(tempGraph)
-
-
-
-}
-figure15.4 <- function() {
-
-
-
-
-nodes <- c("grDevices", "graphics", "grid",
-           "lattice", "ggplot2")
-edgeList <- 
-    list(grDevices=list(edges=c("graphics", "grid")),
-         graphics=list(),
-         grid=list(edges=c("lattice", "ggplot2")),
-         lattice=list(),
-         ggplot2=list())
-simpleGNEL <- new("graphNEL",
-                  nodes=nodes,
-                  edgeL=edgeList,
-                  edgemode="directed")
-
-
-
-Rgraphviz::plot(simpleGNEL, 
-     edgeAttrs=list(lty=c(`grDevices~graphics`="solid", 
-                      `grDevices~grid`="solid",
-                      `grid~lattice`="dashed", 
-                      `grid~ggplot2`="dashed")),
-     nodeAttrs=list(fillcolor=c(grDevices="white", 
-                      graphics="gray90", grid="gray90",
-                      lattice="gray60", ggplot2="gray60")))
-
-
-
-}
-figure15.5 <- function() {
-
-
-
-
-load(system.file("extra", "grd.rda", package="RGraphics"))
-grDraw <- function(layout) {
-    ragrd <- Rgraphviz::agopen(grd, "", layoutType=layout)
-    xy <- Rgraphviz::getNodeXY(ragrd)
-    grid.newpage()
-    pushViewport(viewport(width=1.1, height=1.1),
-                 plotViewport(xscale=range(xy$x), yscale=range(xy$y)))
-    grid.circle(xy$x, xy$y, default.units="native", 
-                r=unit(.25, "mm"), gp=gpar(fill="black"))
-    grdNodes <- graph::nodes(grd)
-    grdEdges <- graph::edges(grd)
-    mapply(function(start, ends) {
-        if (length(ends) > 0) {
-            grid.segments(xy$x[grdNodes == start],
-                          xy$y[grdNodes == start],
-                          xy$x[grdNodes %in% ends],
-                          xy$y[grdNodes %in% ends],
-                          default.units="native",
-                          gp=gpar(col=rgb(0,0,0,.5)))
-        }
-    },
-           as.list(grdNodes),
-           grdEdges)
-    for (i in c("grDevices", "graphics", "grid", "lattice", "ggplot2")) {
-        grid.rect(xy$x[grdNodes == i], xy$y[grdNodes == i],
-                  width=stringWidth(i), height=unit(1, "lines"),
-                  default.units="native",
-                  gp=gpar(col=NA, fill=rgb(.5, .5, .5, .5)))
-        grid.text(i, xy$x[grdNodes == i], xy$y[grdNodes == i],
-                  default.units="native",
-                  gp=gpar(col="white"))
-    }
-}
-
-png("Figures/graph-pkgdep.png", width=1350, height=1350, res=300)
-grDraw("neato")
-dev.off()
-system("cp Figures/graph-pkgdep.png Web/")
-
-
-
-}
-figure15.6 <- function() {
-
-
-
-
-nodes <- c("grDevices", "graphics", "grid",
-           "lattice", "ggplot2")
-edgeList <- 
-    list(grDevices=list(edges=c("graphics", "grid")),
-         graphics=list(),
-         grid=list(edges=c("lattice", "ggplot2")),
-         lattice=list(),
-         ggplot2=list())
-simpleGNEL <- new("graphNEL",
-                  nodes=nodes,
-                  edgeL=edgeList,
-                  edgemode="directed")
-
-
-
-Rgraphviz::toFile(Rgraphviz::agopen(simpleGNEL, ""), 
-       filename="Figures/graph-graphvizrender.ps", 
-       fileType="ps")
-
-
-
-}
-figure15.7 <- function() {
-
-
-
-
-
-dh <- hypergraph::DirectedHyperedge(c("A", "B"), c("C", "D"))
-hg <- hypergraph::Hypergraph(LETTERS[1:4], list(dh))
-getMethod("plot", "graphBPH")(hyperdraw::graphBPH(hg))
-
-
-
-}
-figure15.8 <- function() {
-
-
-
-
-treeIgraph <- igraph::graph.tree(10)
-fullIgraph <- igraph::graph.full(10)
-
-
-
-# See ?igraph.plotting for useful graph attributes
-treeIgraph <- igraph::set.vertex.attribute(treeIgraph, "color", value="black")
-treeIgraph <- igraph::set.edge.attribute(treeIgraph, "color", value="black")
-plot(treeIgraph, 
-     layout=igraph::layout.reingold.tilford(treeIgraph, root=1, flip.y=FALSE))
-
-
-
-fullIgraph <- igraph::set.vertex.attribute(fullIgraph, "color", value="black")
-fullIgraph <- igraph::set.edge.attribute(fullIgraph, "color", value="black")
-plot(fullIgraph, layout=igraph::layout.circle)
-
-
-
-}
-figure15.9 <- function() {
-
-
-
-
-
-
-
-
-nodes <- c("grDevices", "graphics", "grid",
-           "lattice", "ggplot2")
-edgeList <- 
-    list(grDevices=list(edges=c("graphics", "grid")),
-         graphics=list(),
-         grid=list(edges=c("lattice", "ggplot2")),
-         lattice=list(),
-         ggplot2=list())
-simpleGNEL <- new("graphNEL",
-                  nodes=nodes,
-                  edgeL=edgeList,
-                  edgemode="directed")
-
-
-
-simpleNetwork <- 
-    network::network(rbind(c(1, 2),
-                  c(1, 3),
-                  c(3, 4),
-                  c(3, 5)),
-            vertex.attr=list(vertex.names=nodes))
-
-
-
-
-par(mar=rep(2, 4), xpd=NA)
-set.seed(2500)
-plot(simpleNetwork, mode="fruchtermanreingold", 
-     vertex.col=1, displaylabels=TRUE)
-
-
-
-
-}
-figure15.10 <- function() {
-
-
-
-
-par(mar=rep(1, 4))
-plot.new()
-
-nodePos <- diagram::coordinates(c(2, 2, 2, 2))
-
-diagram::straightarrow(nodePos[1, ], nodePos[3,])
-
-diagram::straightarrow(nodePos[3, ], nodePos[4,])
-diagram::straightarrow(nodePos[3, ], nodePos[5,])
-diagram::straightarrow(nodePos[5, ], nodePos[6,])
-diagram::straightarrow(nodePos[6, ], nodePos[4,])
-diagram::straightarrow(nodePos[5, ], nodePos[7,])
-diagram::straightarrow(nodePos[6, ], nodePos[8,])
-diagram::straightarrow(nodePos[7, ], nodePos[8,])
-
-diagram::textplain(nodePos[3, ] + c(.2, .02), lab="yes")
-diagram::textplain(nodePos[5, ] + c(.2, .02), lab="yes")
-diagram::textplain(nodePos[6, ] + c(.03, .15), lab="yes")
-diagram::textplain(nodePos[3, ] + c(.2, .02), lab="yes")
-diagram::textplain(nodePos[5, ] + c(-.03, .125), lab="no")
-diagram::textplain(nodePos[7, ] + c(-.03, .125), lab="no")
-diagram::textplain(nodePos[7, ] + c(.2, -.02), lab="no")
-diagram::textplain(nodePos[8, ] + c(-.03, .125), lab="no")
-
-diagram::textrect(nodePos[1, ], .05, .025, lab="start")
-
-diagram::textdiamond(nodePos[3, ], .15, .1)
-diagram::textplain(nodePos[3, ], .08,
-          lab=c("do you", "understand flow", "charts?"))
-diagram::textellipse(nodePos[4, ], .08, .08,
-            lab=c("let's go", "drink."))
-diagram::textdiamond(nodePos[5, ], .15, .1)
-diagram::textplain(nodePos[5, ], .08,
-          lab=c("you see", "the lines labeled", "'yes'?"))
-diagram::textdiamond(nodePos[6, ], .15, .1)
-diagram::textplain(nodePos[6, ], .08,
-          lab=c("you see", "the lines labeled", "'no'?"))
-diagram::textdiamond(nodePos[7, ], .15, .1)
-diagram::textplain(nodePos[7, ], .08,
-          lab=c("you see", "the lines labeled", "'no'?"))
-diagram::textellipse(nodePos[8, ], .07, .07,
-            lab=c("I hate", "you."))
-
-
-
-}
-figure18.1 <- function() {
-
-
-
-}
-figure18.2 <- function() {
-
-
-
-
-source(system.file("extra", "as.raster.R", package="RGraphics"))
-
-
+figure11.2 <- function() {
+# Data from Land Information New Zealand
+# See Moon/provenance.txt and Moon/moon.R
+lowTides <-
+    c("00:55", "01:47", "02:38", "03:29", "04:20", "05:11", "06:05", 
+      "07:01", "08:00", "09:01", "10:01", "10:58", "11:51", "00:16", 
+      "01:03", "01:44", "02:23", "03:00", "03:36", "04:12", "04:49", 
+      "05:29", "06:12", "07:02", "07:59", "09:02", "10:06", "11:08", 
+      "12:08", "00:34", "01:29")
+phases <- data.frame(date=c("2010-01-01 08:13", "2010-01-07 23:40",
+                       "2010-01-15 08:12", "2010-01-23 23:54",
+                       "2010-01-30 07:18"),
+                     phase=c("Full", "3Q", "New", "1Q", "Full"))
+phases$date <- as.POSIXct(as.character(phases$date))
+lowTideDate <- as.POSIXct(paste("2010-01-", 
+                                sprintf("%02d", 1:31), 
+                                " ", lowTides,
+                                sep=""))
+lowTideHour <- as.POSIXct(paste("2010-01-01 ", 
+                                lowTides,
+                                sep=""))
+
+mainHours <- ISOdatetime(2010, 1, 1,
+                         c(0, 4, 8, 12), 
+                         rep(0, 4), 
+                         rep(0, 4))
+
+
+
+
+moon <- jpeg::readJPEG(system.file("extra", "GPN-2000-000473.jpg",
+                             package="RGraphics"))
 
 
 moonPhase <- function(x, y, phase, size=.05) {
@@ -4106,8 +4092,8 @@ moonPhase <- function(x, y, phase, size=.05) {
 
 # Original image from NASA
 # http://grin.hq.nasa.gov/ABSTRACTS/GPN-2000-000473.html
-rasterMoon <- pixmap::read.pnm(system.file("extra", "GPN-2000-000473.pgm",
-                                   package="RGraphics"))
+rasterMoon <- jpeg::readJPEG(system.file("extra", "GPN-2000-000473.jpg", 
+                                         package="RGraphics"))
 par(pin=c(3.5, 1.75), oma=c(0, 3, 0, 0), xaxs="i", yaxs="i", cex=.7)
 plot.new()
 rect(0, 0, 1, 1, col="black")
@@ -4137,6 +4123,84 @@ for (i in 1:nrow(phases))
               phases$phase[i])
 mtext("Phases of the Moon", side=3, line=3, cex=.7)
 
+
+
+
+}
+figure11.3 <- function() {
+
+moon <- jpeg::readJPEG(system.file("extra", "GPN-2000-000473.jpg",
+                             package="RGraphics"))
+
+
+grid.raster(moon, x=0, y=1, height=.5, just=c("left", "top"))
+grid.raster(moon, x=1, y=.75, 
+            width=.5, height=.25, just="right")
+for (i in seq(10, 90, 10)) {
+  pushViewport(viewport(x=i/100, y=.25, width=.2, height=.2, 
+                        angle=i - 10))
+  grid.raster(moon)
+  popViewport()
+}
+
+
+}
+figure11.4 <- function() {
+
+PostScriptTrace(system.file("extra", "comic_moon.ps",
+                            package="RGraphics"),
+                "comic_moon.xml")
+
+
+vectorMoon <- grImport::readPicture("comic_moon.xml")
+
+
+grImport::grid.picture(vectorMoon)
+grImport::grid.picture(vectorMoon, 
+                       x=0, y=1, just=c("left", "top"),
+                       width=.2, height=.2)
+grImport::grid.picture(vectorMoon, 
+                       x=1, y=1, just=c("right", "top"),
+                       width=.3, height=.1, distort=TRUE)
+
+
+grid.rect()
+grImport::grid.picture(vectorMoon)
+grImport::grid.picture(vectorMoon, 
+                       x=0, y=1, just=c("left", "top"),
+                       width=.2, height=.2)
+grImport::grid.picture(vectorMoon, 
+                       x=1, y=1, just=c("right", "top"),
+                       width=.3, height=.1, distort=TRUE)
+
+
+}
+figure11.5 <- function() {
+# Data from Land Information New Zealand
+# See Moon/provenance.txt and Moon/moon.R
+lowTides <-
+    c("00:55", "01:47", "02:38", "03:29", "04:20", "05:11", "06:05", 
+      "07:01", "08:00", "09:01", "10:01", "10:58", "11:51", "00:16", 
+      "01:03", "01:44", "02:23", "03:00", "03:36", "04:12", "04:49", 
+      "05:29", "06:12", "07:02", "07:59", "09:02", "10:06", "11:08", 
+      "12:08", "00:34", "01:29")
+phases <- data.frame(date=c("2010-01-01 08:13", "2010-01-07 23:40",
+                       "2010-01-15 08:12", "2010-01-23 23:54",
+                       "2010-01-30 07:18"),
+                     phase=c("Full", "3Q", "New", "1Q", "Full"))
+phases$date <- as.POSIXct(as.character(phases$date))
+lowTideDate <- as.POSIXct(paste("2010-01-", 
+                                sprintf("%02d", 1:31), 
+                                " ", lowTides,
+                                sep=""))
+lowTideHour <- as.POSIXct(paste("2010-01-01 ", 
+                                lowTides,
+                                sep=""))
+
+mainHours <- ISOdatetime(2010, 1, 1,
+                         c(0, 4, 8, 12), 
+                         rep(0, 4), 
+                         rep(0, 4))
 
 
 
@@ -4201,117 +4265,19 @@ grid.text("Phases of the Moon",
 popViewport(2)
 
 
-
 }
-figure18.3 <- function() {
-
-
-
-
-source(system.file("extra", "as.raster.R", package="RGraphics"))
-
-
-
-
-moon <- pixmap::read.pnm(system.file("extra", "GPN-2000-000473.pgm",
-                                   package="RGraphics"))
-helmet <- pixmap::read.pnm(system.file("extra", "astronaut.pgm",
-                               package="RGraphics"))
-
-moonMatrix <- as.matrix(as.raster(moon))
-helmetMatrix <- as.matrix(as.raster(helmet))
-
-moonCrop <- moonMatrix[120:(119 + nrow(helmetMatrix)),
-                       10:(9 + ncol(helmetMatrix))]
-moonGreys <- col2rgb(moonCrop)[1, ]
-helmetRGB <- col2rgb(helmetMatrix)
-helmetMask <- matrix(rgb(helmetRGB[1, ],
-                         helmetRGB[2, ],
-                         helmetRGB[3, ],
-                         moonGreys, maxColorValue=255), ncol=ncol(helmetMatrix))
-
-
-
-
-pushViewport(viewport(layout=grid.layout(1, 2, respect=TRUE)))
-pushViewport(viewport(layout.pos.row=1, layout.pos.col=1),
-             viewport(width=.8, height=.8))
-grid.raster(helmet)
-popViewport(2)
-pushViewport(viewport(layout.pos.row=1, layout.pos.col=2),
-             viewport(width=.8, height=.8))
-grid.raster(moonCrop)
-popViewport(2)
-
-
-
-}
-figure18.4 <- function() {
-
-
-
-
-source(system.file("extra", "as.raster.R", package="RGraphics"))
-
-
-
-
-moon <- pixmap::read.pnm(system.file("extra", "GPN-2000-000473.pgm",
-                                   package="RGraphics"))
-helmet <- pixmap::read.pnm(system.file("extra", "astronaut.pgm",
-                               package="RGraphics"))
-
-moonMatrix <- as.matrix(as.raster(moon))
-helmetMatrix <- as.matrix(as.raster(helmet))
-
-moonCrop <- moonMatrix[120:(119 + nrow(helmetMatrix)),
-                       10:(9 + ncol(helmetMatrix))]
-moonGreys <- col2rgb(moonCrop)[1, ]
-helmetRGB <- col2rgb(helmetMatrix)
-helmetMask <- matrix(rgb(helmetRGB[1, ],
-                         helmetRGB[2, ],
-                         helmetRGB[3, ],
-                         moonGreys, maxColorValue=255), ncol=ncol(helmetMatrix))
-
-
-
-
-grid.rect(width=.99, height=.99)
-grid.raster(helmetMask)
-
-
-
-}
-figure18.5 <- function() {
+figure11.6 <- function() {
 
 
 
 
 
-grImport::PostScriptTrace(system.file("extra", "comic_moon.ps",
-                            package="RGraphics"))
+PostScriptTrace(system.file("extra", "comic_moon.ps",
+                            package="RGraphics"),
+                "comic_moon.xml")
 
 
-vectorMoon <- grImport::readPicture("comic_moon.ps.xml")
-
-
-grImport::picturePaths(vectorMoon[1:6], fill="white", 
-             freeScales=TRUE, nr=2, nc=3)
-
-
-
-}
-figure18.6 <- function() {
-
-
-
-
-
-grImport::PostScriptTrace(system.file("extra", "comic_moon.ps",
-                            package="RGraphics"))
-
-
-vectorMoon <- grImport::readPicture("comic_moon.ps.xml")
+vectorMoon <- grImport::readPicture("comic_moon.xml")
 
 
 grImport::grid.picture(vectorMoon[1:4])
@@ -4323,1041 +4289,953 @@ grImport::grid.picture(vectorMoon, use.gc=FALSE)
 
 
 }
+figure11.7 <- function() {
+
+PostScriptTrace(system.file("extra", "comic_moon.ps",
+                            package="RGraphics"),
+                "comic_moon.xml")
+
+
+vectorMoon <- grImport::readPicture("comic_moon.xml")
+
+
+grImport::picturePaths(vectorMoon[1:6], fill="white", 
+             freeScales=TRUE, nr=2, nc=3)
+
+
+
+}
+figure11.8 <- function() {
+
+
+
+rsvg::rsvg_svg(system.file("extra", "comic_moon.svg", 
+         package="RGraphics"),
+         "comic_moon_cairo.svg")
+
+
+
+moonSVG <- grImport2::readPicture("comic_moon_cairo.svg")
+
+
+grImport2::grid.picture(moonSVG)
+
+
+grid.rect()
+grImport2::grid.picture(moonSVG)
+
+
+}
+figure11.9 <- function() {
+importtest <- function() {
+    grid.rect(gp=gpar(col=NA, fill="grey"))
+    grid.text("This should not be visible")
+    grid.raster(matrix(0:1, ncol=5, nrow=2, byrow=TRUE), 
+                interpolate=FALSE)
+}
+importtest()
+
+
+}
+figure11.10 <- function() {
+PostScriptTrace(system.file("extra", "importtest.ps", package="RGraphics"),
+                "importtest.xml")
+test <- grImport::readPicture("importtest.xml")
+grImport::grid.picture(test)
+
+
+}
+figure11.11 <- function() {
+
+
+
+rsvg::rsvg_svg(system.file("extra", "importtest.svg", package="RGraphics"),
+               "importtest-cairo.svg")
+test <- grImport2::readPicture("importtest-cairo.svg")
+grImport2::grid.picture(test)
+
+
+}
+figure11.12 <- function() {
+
+
+
+rsvg::rsvg_svg(system.file("extra", "moon-26619.svg", 
+                     package="RGraphics"),
+         "full-moon.svg")
+moon <- grImport2::readPicture("full-moon.svg")
+
+
+grImport2::grid.picture(moon)
+
+
+}
+figure11.13 <- function() {
+rsvg::rsvg_svg(system.file("extra", "moon-26619.svg", 
+                     package="RGraphics"),
+         "full-moon.svg")
+moon <- grImport2::readPicture("full-moon.svg")
+
+
+grImport2::grid.picture(moon, ext="gridSVG")
+grid.export("moon3gridsvg.svg")
+
+
+}
+figure11.14 <- function() {
+# Data from Land Information New Zealand
+# See Moon/provenance.txt and Moon/moon.R
+lowTides <-
+    c("00:55", "01:47", "02:38", "03:29", "04:20", "05:11", "06:05", 
+      "07:01", "08:00", "09:01", "10:01", "10:58", "11:51", "00:16", 
+      "01:03", "01:44", "02:23", "03:00", "03:36", "04:12", "04:49", 
+      "05:29", "06:12", "07:02", "07:59", "09:02", "10:06", "11:08", 
+      "12:08", "00:34", "01:29")
+phases <- data.frame(date=c("2010-01-01 08:13", "2010-01-07 23:40",
+                       "2010-01-15 08:12", "2010-01-23 23:54",
+                       "2010-01-30 07:18"),
+                     phase=c("Full", "3Q", "New", "1Q", "Full"))
+phases$date <- as.POSIXct(as.character(phases$date))
+lowTideDate <- as.POSIXct(paste("2010-01-", 
+                                sprintf("%02d", 1:31), 
+                                " ", lowTides,
+                                sep=""))
+lowTideHour <- as.POSIXct(paste("2010-01-01 ", 
+                                lowTides,
+                                sep=""))
+
+mainHours <- ISOdatetime(2010, 1, 1,
+                         c(0, 4, 8, 12), 
+                         rep(0, 4), 
+                         rep(0, 4))
+
+
+
+rsvg::rsvg_svg(system.file("extra", "moon-26619.svg", 
+                     package="RGraphics"),
+         "full-moon.svg")
+moon <- grImport2::readPicture("full-moon.svg")
+
+
+pushViewport(viewport(gp=gpar(cex=0.7)),
+             plotViewport(c(4, 5, 3, 1)),
+             dataViewport(as.numeric(lowTideDate), 
+                          as.numeric(mainHours)))
+grid.rect(gp=gpar(fill="black"))
+grImport2::grid.picture(moon, ext="gridSVG", x=.65)
+grid.segments(unit(phases$date, "native"), 0,
+              unit(phases$date, "native"), 1,
+              gp=gpar(lty="dashed", col="white"))
+for (subset in list(1:13, 14:29, 30:31)) {
+  grid.lines(lowTideDate[subset], lowTideHour[subset],
+             default.units="native", 
+             gp=gpar(lwd=2, col="white"))
+  grid.points(lowTideDate[subset], lowTideHour[subset],
+              pch=16, size=unit(2, "mm"),
+              gp=gpar(col="white"))
+}
+xTicks <- seq(min(lowTideDate), max(lowTideDate), by="week")
+grid.xaxis(at=xTicks, label=format(xTicks, "%b %d"))
+grid.yaxis(at=mainHours, label=format(mainHours, "%H:%M"))
+grid.text("Time of Low Tide (NZDT)", 
+          x=unit(-4, "lines"), rot=90)
+grid.text("Auckland, New Zealand January 2010", 
+          y=unit(-3, "lines"))
+grid.xaxis(main=FALSE, at=phases$date, label=FALSE)
+
+
+}
 figure8.1 <- function() {
+grid.text("underlined text", y=.5, just="bottom")
+w <- stringWidth("underlined text")
+grid.segments(unit(.5, "npc") - 0.5*w, 
+              unit(.5, "npc") - unit(1, "mm"),
+              unit(.5, "npc") + 0.5*w, 
+              unit(.5, "npc") - unit(1, "mm"))
 
 
-
-
-makeImageRect <- function(nrow, ncol, cols, byrow) {
-  xx <- (1:ncol)/ncol   
-  yy <- (1:nrow)/nrow
-  if (byrow) {
-    right <- rep(xx, nrow)
-    top <- rep(yy, each=ncol)
-  } else {
-    right <- rep(xx, each=nrow)
-    top <- rep(yy, ncol)
-  }  
-  rectGrob(x=right, y=top, 
-           width=1/ncol, height=1/nrow, 
-           just=c("right", "top"), 
-           gp=gpar(col=NA, fill=cols),
-           name="image")
-}
-
-imageGrob <- function(nrow, ncol, cols, byrow=TRUE,
-                       name=NULL, gp=NULL, vp=NULL) { 
-  igt <- gTree(nrow=nrow, ncol=ncol, 
-               cols=cols, byrow=byrow,
-               children=gList(makeImageRect(nrow, ncol, 
-                                            cols, byrow)),
-               gp=gp, name=name, vp=vp, 
-               cl="imageGrob") 
-  igt
-}
-
-grid.imageGrob <- function(...) {
-  igt <- imageGrob(...)
-  grid.draw(igt)
-}
-
-
-makeOzViewports <- function(ozRegion) {
-  vpStack(viewport(name="ozlay", layout=grid.layout(1, 1,
-                     widths=diff(ozRegion$rangex),
-                     heights=diff(ozRegion$rangey), 
-                     respect=TRUE)),
-          viewport(name="ozvp", layout.pos.row=1, 
-                   layout.pos.col=1,
-                   xscale=ozRegion$rangex, 
-                   yscale=ozRegion$rangey, 
-                   clip=TRUE))
-}
-
-makeOzLines <- function(ozRegion) {
-  numLines <- length(ozRegion$lines)
-  lines <- vector("list", numLines)
-  index <- 1
-  for(i in ozRegion$lines) {
-    lines[[index]] <- linesGrob(i$x, i$y, 
-                    default.units="native",
-                    vp=vpPath("ozlay", "ozvp"), 
-                    name=paste("ozlines", index, sep=""))
-    index <- index + 1
-  }
-  do.call("gList", lines)
-}
-
-ozGrob <- function(ozRegion, name=NULL, gp=NULL, vp=NULL) {
-  gTree(ozRegion=ozRegion, name=name, gp=gp, vp=vp, 
-    childrenvp=makeOzViewports(ozRegion), 
-    children=makeOzLines(ozRegion), 
-    cl="ozGrob")
-}
-
-grid.ozGrob <- function(...) {
-  grid.draw(ozGrob(...))
-}
-
-
-ozImage <- function(mapLong, mapLat, 
-                    imageLong, imageLat, cols) {
-  grob(mapLong=mapLong, mapLat=mapLat, 
-       imageLong=imageLong, imageLat=imageLat, cols=cols,
-       cl="ozImage")  
-}
-
-drawDetails.ozImage <- function(x, recording) { 
-  grid.draw(ozGrob(oz::ozRegion(xlim=x$mapLong, 
-                            ylim=x$mapLat))) 
-  depth <- downViewport(vpPath("ozlay", "ozvp"))
-  pushViewport(viewport(y=min(x$imageLat), 
-                        height=diff(range(x$imageLat)), 
-                        x=max(x$imageLong), 
-                        width=diff(range(x$imageLong)),
-                        default.units="native", 
-                        just=c("right", "bottom")))
-  grid.draw(imageGrob(50, 50, cols=x$col)) 
-  popViewport()
-  upViewport(depth)
-} 
-
-
-calcBreaks <- function(nlevels, breaks, scale) {
-  if (is.null(breaks)) {
-    seq(min(scale), max(scale), diff(scale)/nlevels)
-  } else {
-    breaks
-  }
-}
-
-ribbonVps <- function(nlevels, breaks, margin, scale) {
-  breaks <- format(signif(calcBreaks(nlevels, breaks, scale), 
-                          3))
-  vpTree(
-    viewport(name="layout", layout=
-      grid.layout(3, 4,
-        widths=unit.c(margin, unit(1, "line"),
-                      max(unit(0.8, "line") + 
-                          stringWidth(breaks)), margin),
-        heights=unit.c(margin, unit(1, "null"), margin))),
-    vpList(viewport(layout.pos.col=2, layout.pos.row=2,
-                    yscale=scale, name="ribbon"),
-           viewport(layout.pos.col=3, layout.pos.row=2,
-                    yscale=scale, name="labels")))
-}
-
-ribbonKids <- function(nlevels, breaks, cols, scale) {
-  breaks <- calcBreaks(nlevels, breaks, scale)
-  nb <- length(breaks)
-  tickloc <- breaks[-c(1, nb)]
-  gList(rectGrob(y=unit(breaks[-1], "native"), 
-                 height=unit(diff(breaks), "native"),
-                 just="top", gp=gpar(fill=cols),
-                 vp=vpPath("layout", "ribbon")),
-        segmentsGrob(x1=unit(0.5, "line"),
-                     y0=unit(tickloc, "native"),
-                     y1=unit(tickloc, "native"),
-                     vp=vpPath("layout", "labels")),
-        textGrob(x=unit(0.8, "line"),
-                 y=unit(tickloc, "native"),
-                 just="left", 
-                 label=format(signif(tickloc, 3)),
-                 vp=vpPath("layout", "labels")))
-}
-
-
-ribbonLegend <- function(nlevels=NULL, breaks=NULL, cols, 
-                         scale=range(breaks), 
-                         margin=unit(0.5, "line"), 
-                         gp=NULL, vp=NULL, name=NULL) {
-  gTree(
-    nlevels=nlevels, breaks=breaks, cols=cols, scale=scale, 
-    children=ribbonKids(nlevels, breaks, cols, scale),
-    childrenvp=ribbonVps(nlevels, breaks, margin, scale),
-    gp=gp, vp=vp, name=name, cl="ribbonLegend")
-}
-
-widthDetails.ribbonLegend <- function(x) { 
-  sum(layout.widths(viewport.layout(x$childrenvp[[1]]))) 
-} 
-
-
-mapLong <- c(132, 136)
-mapLat <- c(-35, -31.5)
-imageLong <- range(RGraphics::fluoro.predict$x)
-imageLat <- range(RGraphics::fluoro.predict$y)
-zbreaks <- seq(min(RGraphics::fluoro.predict$z, na.rm=TRUE), 
-               max(RGraphics::fluoro.predict$z, na.rm=TRUE), 
-               length=10)
-zcol <- cut(RGraphics::fluoro.predict$z, zbreaks,
-            include.lowest=TRUE, labels=FALSE)
-ozgrays <- gray(0.5 + 1:9/20)
-imageCols <- ozgrays[zcol]
-
-
-
-ozKey <- function(x, y, width, height, just, 
-                  mapLong, mapLat) {
-  gTree(childrenvp=viewport(name="ozkeyframe",
-                            x=x, y=y, just=just,
-                            width=width, height=height),
-        children=gList(ozGrob(oz::ozRegion(), vp="ozkeyframe",
-                              gp=gpar(lwd=0.1)),
-                       rectGrob(x=mean(mapLong),
-                                y=mean(mapLat),
-                                width=abs(diff(mapLong)),
-                                height=abs(diff(mapLat)),
-                                default.units="native",
-                                gp=gpar(lwd=1),
-                                vp=vpPath("ozkeyframe",
-                                          "ozlay", "ozvp"))))
-}
-
-
-ozimage <- ozImage(mapLong, mapLat, 
-                   imageLong, imageLat, imageCols)
-
-
-
-ribbonlegend <- ribbonLegend(breaks=zbreaks, 
-                             cols=ozgrays, 
-                             scale=range(zbreaks),
-                             gp=gpar(cex=0.7))
-
-
-
-ozkey <- ozKey(x=unit(1, "npc") - unit(1, "mm"),
-               y=unit(1, "npc") - unit(1, "mm"),
-               width=unit(3.5, "cm"),
-               height=unit(2, "cm"),
-               just=c("right", "top"),
-               mapLong, mapLat)
-
-
-
-grid.rect(gp=gpar(col="gray"))
-fg <- frameGrob()
-fg <- packGrob(fg, ozimage)
-fg <- placeGrob(fg, ozkey)
-fg <- packGrob(fg, ribbonlegend, "right")
-grid.draw(fg)
-
-
+grid.rect(gp=gpar(col="grey"))
+grid.text("underlined text", y=.5, just="bottom")
+w <- stringWidth("underlined text")
+grid.segments(unit(.5, "npc") - 0.5*w, 
+              unit(.5, "npc") - unit(1, "mm"),
+              unit(.5, "npc") + 0.5*w, 
+              unit(.5, "npc") - unit(1, "mm"))
 
 
 }
-grid.imageFun <- function(nrow, ncol, cols, 
-                          byrow=TRUE) {
-  x <- (1:ncol)/ncol
-  y <- (1:nrow)/nrow
-  if (byrow) {
-    right <- rep(x, nrow)
-    top <- rep(y, each=ncol)
-  } else {
-    right <- rep(x, each=nrow)
-    top <- rep(y, ncol)
-  }
-  grid.rect(x=right, y=top,  
-    width=1/ncol, height=1/nrow, 
-    just=c("right", "top"),
-    gp=gpar(col=NA, fill=cols),
-    name="image") 
+textCorners <- function(x) {
+    list(xl=grobX(x, 180), xr=grobX(x, 0),
+         yb=grobY(x, 270), yt=grobY(x, 90))
+}
+
+grid.utext <- function(label, x=.5, y=.5, ..., 
+                       name="utext") {
+    grid.text(label, x, y, ..., name=paste0(name, ".label")) 
+    corners <- textCorners(paste0(name, ".label"))
+    grid.segments(corners$xl, corners$yb - unit(.2, "lines"), 
+                  corners$xr, corners$yb - unit(.2, "lines"), 
+                  gp=gpar(lex=get.gpar("cex")),
+                  name=paste0(name, ".underline")) 
 }
 
 
 figure8.3 <- function() {
-grays <- gray(0.5 + (rep(1:4, 4) - rep(0:3, each=4))/10)
+textCorners <- function(x) {
+    list(xl=grobX(x, 180), xr=grobX(x, 0),
+         yb=grobY(x, 270), yt=grobY(x, 90))
+}
 
-
-
-grid.imageFun <- function(nrow, ncol, cols, 
-                          byrow=TRUE) {
-  x <- (1:ncol)/ncol
-  y <- (1:nrow)/nrow
-  if (byrow) {
-    right <- rep(x, nrow)
-    top <- rep(y, each=ncol)
-  } else {
-    right <- rep(x, each=nrow)
-    top <- rep(y, ncol)
-  }
-  grid.rect(x=right, y=top,  
-    width=1/ncol, height=1/nrow, 
-    just=c("right", "top"),
-    gp=gpar(col=NA, fill=cols),
-    name="image") 
+grid.utext <- function(label, x=.5, y=.5, ..., 
+                       name="utext") {
+    grid.text(label, x, y, ..., name=paste0(name, ".label")) 
+    corners <- textCorners(paste0(name, ".label"))
+    grid.segments(corners$xl, corners$yb - unit(.2, "lines"), 
+                  corners$xr, corners$yb - unit(.2, "lines"), 
+                  gp=gpar(lex=get.gpar("cex")),
+                  name=paste0(name, ".underline")) 
 }
 
 
-pushViewport(viewport(layout=grid.layout(3, 5, widths=c(1,8,2,8,1),
-  heights=unit(c(1, 8, 1), c("null", "null", "line")))))
-pushViewport(viewport(layout.pos.col=2, 
-                      layout.pos.row=2))
-grid.imageFun(4, 4, grays)
+grid.utext("underlined text")
 
-popViewport()
-pushViewport(viewport(layout.pos.col=2, 
-                      layout.pos.row=3))
-grid.text("(a)", gp=gpar(cex=0.7))
-popViewport()
-pushViewport(viewport(layout.pos.col=4,
-                      layout.pos.row=2))
-grid.imageFun(4, 4, grays, byrow=FALSE)
 
-popViewport()
-pushViewport(viewport(layout.pos.col=4, 
-                      layout.pos.row=3))
-grid.text("(b)", gp=gpar(cex=0.7))
-popViewport(2)
-
+grid.newpage()
+grid.rect(gp=gpar(col="grey"))
+grid.utext("underlined text")
 
 
 }
-grid.ozFun <- function(ozRegion) {
-  pushViewport( 
-    viewport(name="ozlay", 
-             layout=grid.layout(1,1,
-                      widths=diff(ozRegion$rangex),
-                      heights=diff(ozRegion$rangey), 
-                      respect=TRUE)))
-  pushViewport(viewport(name="ozvp", 
-                        layout.pos.row=1, 
-                        layout.pos.col=1,
-                        xscale=ozRegion$rangex, 
-                        yscale=ozRegion$rangey, 
-                        clip=TRUE)) 
-  index <- 1
-  for(i in ozRegion$lines) {
-    grid.lines(i$x, i$y, default.units="native",
-               name=paste("ozlines", index, sep="")) 
-    index <- index + 1
-  }
-  upViewport(2) 
+figure8.4 <- function() {
+pushViewport(viewport(y=.5, height=.5, just="bottom",
+                      gp=gpar(cex=1)))
+grid.utext("underlined text")
+popViewport()
+pushViewport(viewport(y=0, height=.5, just="bottom",
+                      gp=gpar(cex=0.5)))
+grid.utext("underlined text")
+popViewport()
+
+
+pushViewport(viewport(x=0, width=unit(2, "in"), just="left"))
+grid.rect(gp=gpar(col="grey"))
+pushViewport(viewport(y=.5, height=.5, just="bottom",
+                      gp=gpar(cex=1)))
+grid.utext("underlined text")
+popViewport()
+pushViewport(viewport(y=0, height=.5, just="bottom",
+                      gp=gpar(cex=0.5)))
+grid.utext("underlined text")
+popViewport()
+popViewport()
+pushViewport(viewport(x=1, width=unit(2, "in"), just="right"))
+grid.rect(gp=gpar(col="grey"))
+grid.utextabs <- function(label, x=.5, y=.5, ..., name="utext") {
+    grid.text(label, x, y, ..., name=paste0(name, ".label"))
+    corners <- textCorners(paste0(name, ".label"))
+    grid.segments(corners$xl, corners$yb - unit(1, "mm"), 
+                  corners$xr, corners$yb - unit(1, "mm"), 
+                  name=paste0(name, ".underline"))
 }
+pushViewport(viewport(y=.5, height=.5, just="bottom",
+                      gp=gpar(cex=1)))
+grid.utextabs("underlined text")
+popViewport()
+pushViewport(viewport(y=0, height=.5, just="bottom",
+                      gp=gpar(cex=0.5)))
+grid.utextabs("underlined text")
+popViewport()
+popViewport()
 
 
+}
 figure8.5 <- function() {
-
-
-
-
-grid.ozFun <- function(ozRegion) {
-  pushViewport( 
-    viewport(name="ozlay", 
-             layout=grid.layout(1,1,
-                      widths=diff(ozRegion$rangex),
-                      heights=diff(ozRegion$rangey), 
-                      respect=TRUE)))
-  pushViewport(viewport(name="ozvp", 
-                        layout.pos.row=1, 
-                        layout.pos.col=1,
-                        xscale=ozRegion$rangex, 
-                        yscale=ozRegion$rangey, 
-                        clip=TRUE)) 
-  index <- 1
-  for(i in ozRegion$lines) {
-    grid.lines(i$x, i$y, default.units="native",
-               name=paste("ozlines", index, sep="")) 
-    index <- index + 1
-  }
-  upViewport(2) 
-}
-
-
-grid.rect(gp=gpar(col="gray"))
-grid.ozFun(oz::ozRegion())
-
-
+grid.utext("underlined text")
+grid.edit("utext.underline", gp=gpar(lwd=3, lineend="butt"))
 
 
 }
-figure8.6 <- function() {
-
-
-
-
-grid.imageFun <- function(nrow, ncol, cols, 
-                          byrow=TRUE) {
-  x <- (1:ncol)/ncol
-  y <- (1:nrow)/nrow
-  if (byrow) {
-    right <- rep(x, nrow)
-    top <- rep(y, each=ncol)
-  } else {
-    right <- rep(x, each=nrow)
-    top <- rep(y, ncol)
-  }
-  grid.rect(x=right, y=top,  
-    width=1/ncol, height=1/nrow, 
-    just=c("right", "top"),
-    gp=gpar(col=NA, fill=cols),
-    name="image") 
+utextvp <- function(label, x, y, ..., name="utextvp") {
+    w <- stringWidth(label)
+    viewport(x, y, width=w, height=unit(1, "lines"),
+             ..., name=name) 
 }
 
-
-grid.ozFun <- function(ozRegion) {
-  pushViewport( 
-    viewport(name="ozlay", 
-             layout=grid.layout(1,1,
-                      widths=diff(ozRegion$rangex),
-                      heights=diff(ozRegion$rangey), 
-                      respect=TRUE)))
-  pushViewport(viewport(name="ozvp", 
-                        layout.pos.row=1, 
-                        layout.pos.col=1,
-                        xscale=ozRegion$rangex, 
-                        yscale=ozRegion$rangey, 
-                        clip=TRUE)) 
-  index <- 1
-  for(i in ozRegion$lines) {
-    grid.lines(i$x, i$y, default.units="native",
-               name=paste("ozlines", index, sep="")) 
-    index <- index + 1
-  }
-  upViewport(2) 
-}
+grid.utextvp <- function(label, x=.5, y=.5, ..., 
+                         name="utext") {    
+    pushViewport(utextvp(label, x, y, ...)) 
+    grid.text(label, y=0, just="bottom", 
+              name=paste0(name, ".label"))
+    grid.segments(0, unit(-.2, "lines"),
+                  1, unit(-.2, "lines"),
+                  name=paste0(name, ".underline")) 
+    upViewport() 
+} 
 
 
-mapLong <- c(132, 136)
-mapLat <- c(-35, -31.5)
-imageLong <- range(RGraphics::fluoro.predict$x)
-imageLat <- range(RGraphics::fluoro.predict$y)
-zbreaks <- seq(min(RGraphics::fluoro.predict$z, na.rm=TRUE), 
-               max(RGraphics::fluoro.predict$z, na.rm=TRUE), 
-               length=10)
-zcol <- cut(RGraphics::fluoro.predict$z, zbreaks,
-            include.lowest=TRUE, labels=FALSE)
-ozgrays <- gray(0.5 + 1:9/20)
-imageCols <- ozgrays[zcol]
-
-
-
-mapLong <- c(132, 136)
-mapLat <- c(-35, -31.5)
-imageLong <- range(RGraphics::fluoro.predict$x)
-imageLat <- range(RGraphics::fluoro.predict$y)
-zbreaks <- seq(min(RGraphics::fluoro.predict$z, na.rm=TRUE), 
-               max(RGraphics::fluoro.predict$z, na.rm=TRUE), 
-               length=10)
-zcol <- cut(RGraphics::fluoro.predict$z, zbreaks,
-            include.lowest=TRUE, labels=FALSE)
-ozgrays <- gray(0.5 + 1:9/20)
-imageCols <- ozgrays[zcol]
-
-grid.rect(gp=gpar(col="gray"))
-grid.ozFun(oz::ozRegion(xlim=mapLong, ylim=mapLat))
-
-downViewport("ozvp")
-
-pushViewport(viewport(y=min(imageLat), 
-                      height=abs(diff(imageLat)), 
-                      x=max(imageLong), 
-                      width=abs(diff(imageLong)),
-                      default.units="native", 
-                      just=c("right", "bottom")))
-grid.imageFun(50, 50, col=imageCols)
-upViewport(0)
-
-
-
-
-}
 figure8.7 <- function() {
-
-
-
-
-grid.imageFun <- function(nrow, ncol, cols, 
-                          byrow=TRUE) {
-  x <- (1:ncol)/ncol
-  y <- (1:nrow)/nrow
-  if (byrow) {
-    right <- rep(x, nrow)
-    top <- rep(y, each=ncol)
-  } else {
-    right <- rep(x, each=nrow)
-    top <- rep(y, ncol)
-  }
-  grid.rect(x=right, y=top,  
-    width=1/ncol, height=1/nrow, 
-    just=c("right", "top"),
-    gp=gpar(col=NA, fill=cols),
-    name="image") 
+utextvp <- function(label, x, y, ..., name="utextvp") {
+    w <- stringWidth(label)
+    viewport(x, y, width=w, height=unit(1, "lines"),
+             ..., name=name) 
 }
 
-
-grid.ozFun <- function(ozRegion) {
-  pushViewport( 
-    viewport(name="ozlay", 
-             layout=grid.layout(1,1,
-                      widths=diff(ozRegion$rangex),
-                      heights=diff(ozRegion$rangey), 
-                      respect=TRUE)))
-  pushViewport(viewport(name="ozvp", 
-                        layout.pos.row=1, 
-                        layout.pos.col=1,
-                        xscale=ozRegion$rangex, 
-                        yscale=ozRegion$rangey, 
-                        clip=TRUE)) 
-  index <- 1
-  for(i in ozRegion$lines) {
-    grid.lines(i$x, i$y, default.units="native",
-               name=paste("ozlines", index, sep="")) 
-    index <- index + 1
-  }
-  upViewport(2) 
-}
-
-
-mapLong <- c(132, 136)
-mapLat <- c(-35, -31.5)
-imageLong <- range(RGraphics::fluoro.predict$x)
-imageLat <- range(RGraphics::fluoro.predict$y)
-zbreaks <- seq(min(RGraphics::fluoro.predict$z, na.rm=TRUE), 
-               max(RGraphics::fluoro.predict$z, na.rm=TRUE), 
-               length=10)
-zcol <- cut(RGraphics::fluoro.predict$z, zbreaks,
-            include.lowest=TRUE, labels=FALSE)
-ozgrays <- gray(0.5 + 1:9/20)
-imageCols <- ozgrays[zcol]
-
-
-
-grid.rect(gp=gpar(col="gray"))
-grid.ozFun(oz::ozRegion(xlim=mapLong, ylim=mapLat))
-
-downViewport("ozvp")
-
-pushViewport(viewport(y=min(imageLat), 
-                      height=abs(diff(imageLat)), 
-                      x=max(imageLong), 
-                      width=abs(diff(imageLong)),
-                      default.units="native", 
-                      just=c("right", "bottom")))
-grid.imageFun(50, 50, col=imageCols)
-upViewport(0)
-
-grid.edit("image", gp=gpar(fill=rev(ozgrays)[zcol]))
-grid.gedit("^ozlines[0-9]+$", gp=gpar(col="gray", lwd=2))
-
-
-
-
-}
-makeImageRect <- function(nrow, ncol, cols, byrow) {
-  xx <- (1:ncol)/ncol   
-  yy <- (1:nrow)/nrow
-  if (byrow) {
-    right <- rep(xx, nrow)
-    top <- rep(yy, each=ncol)
-  } else {
-    right <- rep(xx, each=nrow)
-    top <- rep(yy, ncol)
-  }  
-  rectGrob(x=right, y=top, 
-           width=1/ncol, height=1/nrow, 
-           just=c("right", "top"), 
-           gp=gpar(col=NA, fill=cols),
-           name="image")
-}
-
-imageGrob <- function(nrow, ncol, cols, byrow=TRUE,
-                       name=NULL, gp=NULL, vp=NULL) { 
-  igt <- gTree(nrow=nrow, ncol=ncol, 
-               cols=cols, byrow=byrow,
-               children=gList(makeImageRect(nrow, ncol, 
-                                            cols, byrow)),
-               gp=gp, name=name, vp=vp, 
-               cl="imageGrob") 
-  igt
-}
-
-grid.imageGrob <- function(...) {
-  igt <- imageGrob(...)
-  grid.draw(igt)
-}
-
-
-validDetails.imageGrob <- function(x) { 
-  if (!is.numeric(x$nrow) || length(x$nrow) > 1 || 
-      !is.numeric(x$ncol) || length(x$ncol) > 1)
-    stop("nrow and ncol must be numeric and length 1")
-  if (!is.logical(x$byrow))
-    stop("byrow must be logical")
-  x 
-} 
-
-validDetails.ozGrob <- function(x) {
-  if (!inherits(x$ozRegion, "ozRegion"))
-    stop("Invalid ozRegion")
-  x
-}
-
-
-makeOzViewports <- function(ozRegion) {
-  vpStack(viewport(name="ozlay", layout=grid.layout(1, 1,
-                     widths=diff(ozRegion$rangex),
-                     heights=diff(ozRegion$rangey), 
-                     respect=TRUE)),
-          viewport(name="ozvp", layout.pos.row=1, 
-                   layout.pos.col=1,
-                   xscale=ozRegion$rangex, 
-                   yscale=ozRegion$rangey, 
-                   clip=TRUE))
-}
-
-makeOzLines <- function(ozRegion) {
-  numLines <- length(ozRegion$lines)
-  lines <- vector("list", numLines)
-  index <- 1
-  for(i in ozRegion$lines) {
-    lines[[index]] <- linesGrob(i$x, i$y, 
-                    default.units="native",
-                    vp=vpPath("ozlay", "ozvp"), 
-                    name=paste("ozlines", index, sep=""))
-    index <- index + 1
-  }
-  do.call("gList", lines)
-}
-
-ozGrob <- function(ozRegion, name=NULL, gp=NULL, vp=NULL) {
-  gTree(ozRegion=ozRegion, name=name, gp=gp, vp=vp, 
-    childrenvp=makeOzViewports(ozRegion), 
-    children=makeOzLines(ozRegion), 
-    cl="ozGrob")
-}
-
-grid.ozGrob <- function(...) {
-  grid.draw(ozGrob(...))
-}
-
-
-ozImage <- function(mapLong, mapLat, 
-                    imageLong, imageLat, cols) {
-  grob(mapLong=mapLong, mapLat=mapLat, 
-       imageLong=imageLong, imageLat=imageLat, cols=cols,
-       cl="ozImage")  
-}
-
-drawDetails.ozImage <- function(x, recording) { 
-  grid.draw(ozGrob(oz::ozRegion(xlim=x$mapLong, 
-                            ylim=x$mapLat))) 
-  depth <- downViewport(vpPath("ozlay", "ozvp"))
-  pushViewport(viewport(y=min(x$imageLat), 
-                        height=diff(range(x$imageLat)), 
-                        x=max(x$imageLong), 
-                        width=diff(range(x$imageLong)),
-                        default.units="native", 
-                        just=c("right", "bottom")))
-  grid.draw(imageGrob(50, 50, cols=x$col)) 
-  popViewport()
-  upViewport(depth)
+grid.utextvp <- function(label, x=.5, y=.5, ..., 
+                         name="utext") {    
+    pushViewport(utextvp(label, x, y, ...)) 
+    grid.text(label, y=0, just="bottom", 
+              name=paste0(name, ".label"))
+    grid.segments(0, unit(-.2, "lines"),
+                  1, unit(-.2, "lines"),
+                  name=paste0(name, ".underline")) 
+    upViewport() 
 } 
 
 
-editDetails.imageGrob <- function(x, specs) { 
-  if (any(c("ncol", "nrow", "byrow") %in% names(specs))) { 
-    x <- addGrob(x, makeImageRect(x$nrow, x$ncol,
-                                  x$cols, x$byrow))
-  } 
-  if (any(c("cols") %in% names(specs))) { 
-    x <- editGrob(x, "image", gp=gpar(fill=x$cols))
-  } 
-  x 
+grid.utextvp("underlined text", angle=20)
+
+
+grid.newpage()
+grid.rect(gp=gpar(col="grey"))
+grid.utextvp("underlined text", angle=20)
+
+
+}
+figure8.8 <- function() {
+utextvp <- function(label, x, y, ..., name="utextvp") {
+    w <- stringWidth(label)
+    viewport(x, y, width=w, height=unit(1, "lines"),
+             ..., name=name) 
+}
+
+grid.utextvp <- function(label, x=.5, y=.5, ..., 
+                         name="utext") {    
+    pushViewport(utextvp(label, x, y, ...)) 
+    grid.text(label, y=0, just="bottom", 
+              name=paste0(name, ".label"))
+    grid.segments(0, unit(-.2, "lines"),
+                  1, unit(-.2, "lines"),
+                  name=paste0(name, ".underline")) 
+    upViewport() 
 } 
 
-editDetails.ozGrob <- function(x, specs) {
-  if ("ozRegion" %in% names(specs)) {
-    x$childrenvp <- makeOzViewports(x$ozRegion)
-    x <- setChildren(x, makeOzLines(x$ozRegion))
-  }
-  x
+
+grid.utextvp("underlined text", angle=20)
+
+
+downViewport("utextvp")
+grid.segments(0, unit(-.3, "lines"), 1, unit(-.3, "lines"))
+
+
+grid.newpage()
+grid.rect(gp=gpar(col="grey"))
+grid.utextvp("underlined text", angle=20)
+downViewport("utextvp")
+grid.segments(0, unit(-.3, "lines"), 1, unit(-.3, "lines"))
+
+
+}
+figure8.9 <- function() {
+utextvp <- function(label, x, y, ..., name="utextvp") {
+    w <- stringWidth(label)
+    viewport(x, y, width=w, height=unit(1, "lines"),
+             ..., name=name) 
+}
+
+grid.utextvp <- function(label, x=.5, y=.5, ..., 
+                         name="utext") {    
+    pushViewport(utextvp(label, x, y, ...)) 
+    grid.text(label, y=0, just="bottom", 
+              name=paste0(name, ".label"))
+    grid.segments(0, unit(-.2, "lines"),
+                  1, unit(-.2, "lines"),
+                  name=paste0(name, ".underline")) 
+    upViewport() 
+} 
+
+
+grid.utextvp("underlined text", angle=20)
+
+
+grid.edit("utext.label", label="le texte soulign\U00E9")
+
+
+}
+utextChildren <- function(label, x, y, just, name) {
+    t <- textGrob(label, x, y, just=just,
+                  name=paste0(name, ".label"))
+    corners <- textCorners(t)
+    s <- segmentsGrob(corners$xl, 
+                      corners$yb - unit(.2, "lines"),
+                      corners$xr, 
+                      corners$yb - unit(.2, "lines"),
+                      name=paste0(name, ".underline"))
+    gList(t, s)
+}
+    
+utextStatic <- function(label,
+                        x=.5, y=.5, default.units="npc",
+                        just="centre", name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    kids <- utextChildren(label, x, y, just, name)
+    gTree(label=label, x=x, y=y, just=just, 
+          children=kids, cl="utextStatic", name=name)
+}
+
+
+figure8.11 <- function() {
+utextChildren <- function(label, x, y, just, name) {
+    t <- textGrob(label, x, y, just=just,
+                  name=paste0(name, ".label"))
+    corners <- textCorners(t)
+    s <- segmentsGrob(corners$xl, 
+                      corners$yb - unit(.2, "lines"),
+                      corners$xr, 
+                      corners$yb - unit(.2, "lines"),
+                      name=paste0(name, ".underline"))
+    gList(t, s)
+}
+    
+utextStatic <- function(label,
+                        x=.5, y=.5, default.units="npc",
+                        just="centre", name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    kids <- utextChildren(label, x, y, just, name)
+    gTree(label=label, x=x, y=y, just=just, 
+          children=kids, cl="utextStatic", name=name)
+}
+
+
+ug <- utextStatic("underlined text")
+grid.draw(ug)
+
+
+grid.newpage()
+grid.rect(gp=gpar(col="grey"))
+ug <- utextStatic("underlined text")
+grid.draw(ug)
+
+
+}
+editDetails.utextStatic <- function(x, specs) {
+    if (any(names(specs) %in% 
+        c("label", "x", "y", "just"))) {
+        kids <- utextChildren(x$label, x$x, x$y, 
+                              x$just, x$name)
+        x <- setChildren(x, kids)
+    }
+    x   
 }
 
 
 figure8.13 <- function() {
-grays <- gray(0.5 + (rep(1:4, 4) - rep(0:3, each=4))/10)
+ug <- utextStatic("underlined text")
+grid.draw(ug)
 
 
-
-makeImageRect <- function(nrow, ncol, cols, byrow) {
-  xx <- (1:ncol)/ncol   
-  yy <- (1:nrow)/nrow
-  if (byrow) {
-    right <- rep(xx, nrow)
-    top <- rep(yy, each=ncol)
-  } else {
-    right <- rep(xx, each=nrow)
-    top <- rep(yy, ncol)
-  }  
-  rectGrob(x=right, y=top, 
-           width=1/ncol, height=1/nrow, 
-           just=c("right", "top"), 
-           gp=gpar(col=NA, fill=cols),
-           name="image")
-}
-
-imageGrob <- function(nrow, ncol, cols, byrow=TRUE,
-                       name=NULL, gp=NULL, vp=NULL) { 
-  igt <- gTree(nrow=nrow, ncol=ncol, 
-               cols=cols, byrow=byrow,
-               children=gList(makeImageRect(nrow, ncol, 
-                                            cols, byrow)),
-               gp=gp, name=name, vp=vp, 
-               cl="imageGrob") 
-  igt
-}
-
-grid.imageGrob <- function(...) {
-  igt <- imageGrob(...)
-  grid.draw(igt)
-}
-
-
-editDetails.imageGrob <- function(x, specs) { 
-  if (any(c("ncol", "nrow", "byrow") %in% names(specs))) { 
-    x <- addGrob(x, makeImageRect(x$nrow, x$ncol,
-                                  x$cols, x$byrow))
-  } 
-  if (any(c("cols") %in% names(specs))) { 
-    x <- editGrob(x, "image", gp=gpar(fill=x$cols))
-  } 
-  x 
-} 
-
-editDetails.ozGrob <- function(x, specs) {
-  if ("ozRegion" %in% names(specs)) {
-    x$childrenvp <- makeOzViewports(x$ozRegion)
-    x <- setChildren(x, makeOzLines(x$ozRegion))
-  }
-  x
-}
-
-
-pushViewport(viewport(layout=grid.layout(2, 1, 
-                                         heights=unit(c(1, 1),
-                                                      c("null", "line")),
-                                         respect=TRUE)))
-pushViewport(viewport(layout.pos.row=1))
-grid.imageGrob(4, 4, grays, name="imageGrob")
-
-popViewport()
-pushViewport(viewport(layout.pos.row=2, gp=gpar(cex=0.7)))
-grid.text("(a)", name="label")
-popViewport()
-grid.edit("imageGrob", byrow=FALSE)
-
-grid.remove("label")
-pushViewport(viewport(layout.pos.row=2, gp=gpar(cex=0.7)))
-grid.text("(b)", name="label")
-popViewport()
-grid.edit("imageGrob::image", gp=gpar(col="white", lwd=6))
-
-grid.remove("label")
-pushViewport(viewport(layout.pos.row=2, gp=gpar(cex=0.7)))
-grid.text("(c)", name="label")
-popViewport(2)
-
+grid.edit("utext", label="le texte soulign\U00E9")
 
 
 }
 figure8.14 <- function() {
-grays <- gray(0.5 + (rep(1:4, 4) - rep(0:3, each=4))/10)
+ug <- utextStatic("underlined text")
+grid.draw(ug)
 
 
-
-makeImageRect <- function(nrow, ncol, cols, byrow) {
-  xx <- (1:ncol)/ncol   
-  yy <- (1:nrow)/nrow
-  if (byrow) {
-    right <- rep(xx, nrow)
-    top <- rep(yy, each=ncol)
-  } else {
-    right <- rep(xx, each=nrow)
-    top <- rep(yy, ncol)
-  }  
-  rectGrob(x=right, y=top, 
-           width=1/ncol, height=1/nrow, 
-           just=c("right", "top"), 
-           gp=gpar(col=NA, fill=cols),
-           name="image")
-}
-
-imageGrob <- function(nrow, ncol, cols, byrow=TRUE,
-                       name=NULL, gp=NULL, vp=NULL) { 
-  igt <- gTree(nrow=nrow, ncol=ncol, 
-               cols=cols, byrow=byrow,
-               children=gList(makeImageRect(nrow, ncol, 
-                                            cols, byrow)),
-               gp=gp, name=name, vp=vp, 
-               cl="imageGrob") 
-  igt
-}
-
-grid.imageGrob <- function(...) {
-  igt <- imageGrob(...)
-  grid.draw(igt)
-}
-
-
-editDetails.imageGrob <- function(x, specs) { 
-  if (any(c("ncol", "nrow", "byrow") %in% names(specs))) { 
-    x <- addGrob(x, makeImageRect(x$nrow, x$ncol,
-                                  x$cols, x$byrow))
-  } 
-  if (any(c("cols") %in% names(specs))) { 
-    x <- editGrob(x, "image", gp=gpar(fill=x$cols))
-  } 
-  x 
-} 
-
-editDetails.ozGrob <- function(x, specs) {
-  if ("ozRegion" %in% names(specs)) {
-    x$childrenvp <- makeOzViewports(x$ozRegion)
-    x <- setChildren(x, makeOzLines(x$ozRegion))
-  }
-  x
-}
-
-
-pushViewport(viewport(layout=grid.layout(2, 1, 
-                                         heights=unit(c(1, 1),
-                                                      c("null", "line")),
-                                         respect=TRUE)))
-pushViewport(viewport(layout.pos.row=1))
-grid.imageGrob(4, 4, grays, name="imageGrob")
-
-grid.edit("imageGrob::image", gp=gpar(col="white"))
-
-popViewport()
-pushViewport(viewport(layout.pos.row=2, gp=gpar(cex=0.7)))
-grid.text("(a)", name="label")
-popViewport()
-grid.edit("imageGrob", cols=rev(grays))
-
-grid.remove("label")
-pushViewport(viewport(layout.pos.row=2, gp=gpar(cex=0.7)))
-grid.text("(b)", name="label")
-popViewport()
-grid.edit("imageGrob", byrow=FALSE)
-
-grid.remove("label")
-pushViewport(viewport(layout.pos.row=2, gp=gpar(cex=0.7)))
-grid.text("(c)", name="label")
-popViewport(2)
-
+grid.edit("utext.underline", gp=gpar(lty="dashed"))
 
 
 }
-calcBreaks <- function(nlevels, breaks, scale) {
-  if (is.null(breaks)) {
-    seq(min(scale), max(scale), diff(scale)/nlevels)
-  } else {
-    breaks
-  }
+utextvpChildren <- function(label, name) {
+    t <- textGrob(label, y=0, just="bottom", 
+                  vp=paste0(name, ".vp"),
+                  name=paste0(name, ".label"))
+    s <- segmentsGrob(0, unit(-.2, "lines"),
+                      1, unit(-.2, "lines"),
+                      vp=paste0(name, ".vp"),
+                      name=paste0(name, ".underline"))
+    gList(t, s)
+}
+    
+utextvpStatic <- function(label, x=.5, y=.5, 
+                          default.units="npc",
+                          angle=0, just="centre", 
+                          name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    kids <- utextvpChildren(label, name) 
+    kidsvp <- utextvp(label, x, y, just=just, angle=angle, 
+                      name=paste0(name, ".vp"))
+    gTree(label=label, x=x, y=y, just=just, angle=angle,
+          children=kids, childrenvp=kidsvp, 
+          cl="utextvpStatic", name=name)
 }
 
-ribbonVps <- function(nlevels, breaks, margin, scale) {
-  breaks <- format(signif(calcBreaks(nlevels, breaks, scale), 
-                          3))
-  vpTree(
-    viewport(name="layout", layout=
-      grid.layout(3, 4,
-        widths=unit.c(margin, unit(1, "line"),
-                      max(unit(0.8, "line") + 
-                          stringWidth(breaks)), margin),
-        heights=unit.c(margin, unit(1, "null"), margin))),
-    vpList(viewport(layout.pos.col=2, layout.pos.row=2,
-                    yscale=scale, name="ribbon"),
-           viewport(layout.pos.col=3, layout.pos.row=2,
-                    yscale=scale, name="labels")))
-}
-
-ribbonKids <- function(nlevels, breaks, cols, scale) {
-  breaks <- calcBreaks(nlevels, breaks, scale)
-  nb <- length(breaks)
-  tickloc <- breaks[-c(1, nb)]
-  gList(rectGrob(y=unit(breaks[-1], "native"), 
-                 height=unit(diff(breaks), "native"),
-                 just="top", gp=gpar(fill=cols),
-                 vp=vpPath("layout", "ribbon")),
-        segmentsGrob(x1=unit(0.5, "line"),
-                     y0=unit(tickloc, "native"),
-                     y1=unit(tickloc, "native"),
-                     vp=vpPath("layout", "labels")),
-        textGrob(x=unit(0.8, "line"),
-                 y=unit(tickloc, "native"),
-                 just="left", 
-                 label=format(signif(tickloc, 3)),
-                 vp=vpPath("layout", "labels")))
+editDetails.utextvpStatic <- function(x, specs) {
+    if (any(names(specs) %in% 
+            c("label", "x", "y", "just", "angle"))) {
+        kids <- utextvpChildren(x$label, x$name)
+        kidsvp <- utextvp(x$label, x$x, x$y, 
+                          just=x$just, angle=x$angle,
+                          name=paste0(x$name, ".vp"))
+        x$childrenvp <- kidsvp
+        x <- setChildren(x, kids)
+    }
+    x   
 }
 
 
-ribbonLegend <- function(nlevels=NULL, breaks=NULL, cols, 
-                         scale=range(breaks), 
-                         margin=unit(0.5, "line"), 
-                         gp=NULL, vp=NULL, name=NULL) {
-  gTree(
-    nlevels=nlevels, breaks=breaks, cols=cols, scale=scale, 
-    children=ribbonKids(nlevels, breaks, cols, scale),
-    childrenvp=ribbonVps(nlevels, breaks, margin, scale),
-    gp=gp, vp=vp, name=name, cl="ribbonLegend")
+figure8.16 <- function() {
+utextvpChildren <- function(label, name) {
+    t <- textGrob(label, y=0, just="bottom", 
+                  vp=paste0(name, ".vp"),
+                  name=paste0(name, ".label"))
+    s <- segmentsGrob(0, unit(-.2, "lines"),
+                      1, unit(-.2, "lines"),
+                      vp=paste0(name, ".vp"),
+                      name=paste0(name, ".underline"))
+    gList(t, s)
+}
+    
+utextvpStatic <- function(label, x=.5, y=.5, 
+                          default.units="npc",
+                          angle=0, just="centre", 
+                          name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    kids <- utextvpChildren(label, name) 
+    kidsvp <- utextvp(label, x, y, just=just, angle=angle, 
+                      name=paste0(name, ".vp"))
+    gTree(label=label, x=x, y=y, just=just, angle=angle,
+          children=kids, childrenvp=kidsvp, 
+          cl="utextvpStatic", name=name)
 }
 
-widthDetails.ribbonLegend <- function(x) { 
-  sum(layout.widths(viewport.layout(x$childrenvp[[1]]))) 
-} 
-
-
-ozKey <- function(x, y, width, height, just, 
-                  mapLong, mapLat) {
-  gTree(childrenvp=viewport(name="ozkeyframe",
-                            x=x, y=y, just=just,
-                            width=width, height=height),
-        children=gList(ozGrob(oz::ozRegion(), vp="ozkeyframe",
-                              gp=gpar(lwd=0.1)),
-                       rectGrob(x=mean(mapLong),
-                                y=mean(mapLat),
-                                width=abs(diff(mapLong)),
-                                height=abs(diff(mapLat)),
-                                default.units="native",
-                                gp=gpar(lwd=1),
-                                vp=vpPath("ozkeyframe",
-                                          "ozlay", "ozvp"))))
+editDetails.utextvpStatic <- function(x, specs) {
+    if (any(names(specs) %in% 
+            c("label", "x", "y", "just", "angle"))) {
+        kids <- utextvpChildren(x$label, x$name)
+        kidsvp <- utextvp(x$label, x$x, x$y, 
+                          just=x$just, angle=x$angle,
+                          name=paste0(x$name, ".vp"))
+        x$childrenvp <- kidsvp
+        x <- setChildren(x, kids)
+    }
+    x   
 }
 
 
+ug <- utextvpStatic("underlined text", angle=20)
+grid.draw(ug)
+
+
+grid.newpage()
+grid.rect(gp=gpar(col="grey"))
+ug <- utextvpStatic("underlined text", angle=20)
+grid.draw(ug)
+
+
+}
+figure8.17 <- function() {
+utextvpChildren <- function(label, name) {
+    t <- textGrob(label, y=0, just="bottom", 
+                  vp=paste0(name, ".vp"),
+                  name=paste0(name, ".label"))
+    s <- segmentsGrob(0, unit(-.2, "lines"),
+                      1, unit(-.2, "lines"),
+                      vp=paste0(name, ".vp"),
+                      name=paste0(name, ".underline"))
+    gList(t, s)
+}
+    
+utextvpStatic <- function(label, x=.5, y=.5, 
+                          default.units="npc",
+                          angle=0, just="centre", 
+                          name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    kids <- utextvpChildren(label, name) 
+    kidsvp <- utextvp(label, x, y, just=just, angle=angle, 
+                      name=paste0(name, ".vp"))
+    gTree(label=label, x=x, y=y, just=just, angle=angle,
+          children=kids, childrenvp=kidsvp, 
+          cl="utextvpStatic", name=name)
+}
+
+editDetails.utextvpStatic <- function(x, specs) {
+    if (any(names(specs) %in% 
+            c("label", "x", "y", "just", "angle"))) {
+        kids <- utextvpChildren(x$label, x$name)
+        kidsvp <- utextvp(x$label, x$x, x$y, 
+                          just=x$just, angle=x$angle,
+                          name=paste0(x$name, ".vp"))
+        x$childrenvp <- kidsvp
+        x <- setChildren(x, kids)
+    }
+    x   
+}
+
+
+ug <- utextvpStatic("underlined text", angle=20)
+grid.draw(ug)
+
+
+grid.edit("utext", label="le texte soulign\U00E9")
+
+
+}
 figure8.18 <- function() {
-
-
-
-
-makeOzViewports <- function(ozRegion) {
-  vpStack(viewport(name="ozlay", layout=grid.layout(1, 1,
-                     widths=diff(ozRegion$rangex),
-                     heights=diff(ozRegion$rangey), 
-                     respect=TRUE)),
-          viewport(name="ozvp", layout.pos.row=1, 
-                   layout.pos.col=1,
-                   xscale=ozRegion$rangex, 
-                   yscale=ozRegion$rangey, 
-                   clip=TRUE))
+utextvpChildren <- function(label, name) {
+    t <- textGrob(label, y=0, just="bottom", 
+                  vp=paste0(name, ".vp"),
+                  name=paste0(name, ".label"))
+    s <- segmentsGrob(0, unit(-.2, "lines"),
+                      1, unit(-.2, "lines"),
+                      vp=paste0(name, ".vp"),
+                      name=paste0(name, ".underline"))
+    gList(t, s)
+}
+    
+utextvpStatic <- function(label, x=.5, y=.5, 
+                          default.units="npc",
+                          angle=0, just="centre", 
+                          name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    kids <- utextvpChildren(label, name) 
+    kidsvp <- utextvp(label, x, y, just=just, angle=angle, 
+                      name=paste0(name, ".vp"))
+    gTree(label=label, x=x, y=y, just=just, angle=angle,
+          children=kids, childrenvp=kidsvp, 
+          cl="utextvpStatic", name=name)
 }
 
-makeOzLines <- function(ozRegion) {
-  numLines <- length(ozRegion$lines)
-  lines <- vector("list", numLines)
-  index <- 1
-  for(i in ozRegion$lines) {
-    lines[[index]] <- linesGrob(i$x, i$y, 
-                    default.units="native",
-                    vp=vpPath("ozlay", "ozvp"), 
-                    name=paste("ozlines", index, sep=""))
-    index <- index + 1
-  }
-  do.call("gList", lines)
-}
-
-ozGrob <- function(ozRegion, name=NULL, gp=NULL, vp=NULL) {
-  gTree(ozRegion=ozRegion, name=name, gp=gp, vp=vp, 
-    childrenvp=makeOzViewports(ozRegion), 
-    children=makeOzLines(ozRegion), 
-    cl="ozGrob")
-}
-
-grid.ozGrob <- function(...) {
-  grid.draw(ozGrob(...))
+editDetails.utextvpStatic <- function(x, specs) {
+    if (any(names(specs) %in% 
+            c("label", "x", "y", "just", "angle"))) {
+        kids <- utextvpChildren(x$label, x$name)
+        kidsvp <- utextvp(x$label, x$x, x$y, 
+                          just=x$just, angle=x$angle,
+                          name=paste0(x$name, ".vp"))
+        x$childrenvp <- kidsvp
+        x <- setChildren(x, kids)
+    }
+    x   
 }
 
 
-calcBreaks <- function(nlevels, breaks, scale) {
-  if (is.null(breaks)) {
-    seq(min(scale), max(scale), diff(scale)/nlevels)
-  } else {
-    breaks
-  }
+ug <- utextvpStatic("underlined text", angle=20)
+grid.draw(ug)
+
+
+grid.edit("utext.underline", gp=gpar(lty="dashed"))
+
+
+}
+utextDynamic <- function(label,
+                         x=.5, y=.5, default.units="npc",
+                         just="centre", name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    gTree(label=label, x=x, y=y, just=just, 
+          cl="utextDynamic", name=name)
 }
 
-ribbonVps <- function(nlevels, breaks, margin, scale) {
-  breaks <- format(signif(calcBreaks(nlevels, breaks, scale), 
-                          3))
-  vpTree(
-    viewport(name="layout", layout=
-      grid.layout(3, 4,
-        widths=unit.c(margin, unit(1, "line"),
-                      max(unit(0.8, "line") + 
-                          stringWidth(breaks)), margin),
-        heights=unit.c(margin, unit(1, "null"), margin))),
-    vpList(viewport(layout.pos.col=2, layout.pos.row=2,
-                    yscale=scale, name="ribbon"),
-           viewport(layout.pos.col=3, layout.pos.row=2,
-                    yscale=scale, name="labels")))
-}
-
-ribbonKids <- function(nlevels, breaks, cols, scale) {
-  breaks <- calcBreaks(nlevels, breaks, scale)
-  nb <- length(breaks)
-  tickloc <- breaks[-c(1, nb)]
-  gList(rectGrob(y=unit(breaks[-1], "native"), 
-                 height=unit(diff(breaks), "native"),
-                 just="top", gp=gpar(fill=cols),
-                 vp=vpPath("layout", "ribbon")),
-        segmentsGrob(x1=unit(0.5, "line"),
-                     y0=unit(tickloc, "native"),
-                     y1=unit(tickloc, "native"),
-                     vp=vpPath("layout", "labels")),
-        textGrob(x=unit(0.8, "line"),
-                 y=unit(tickloc, "native"),
-                 just="left", 
-                 label=format(signif(tickloc, 3)),
-                 vp=vpPath("layout", "labels")))
+makeContent.utextDynamic <- function(x) {
+    kids <- utextChildren(x$label, x$x, x$y, 
+                          just=x$just, x$name) 
+    setChildren(x, kids) 
 }
 
 
-ribbonLegend <- function(nlevels=NULL, breaks=NULL, cols, 
-                         scale=range(breaks), 
-                         margin=unit(0.5, "line"), 
-                         gp=NULL, vp=NULL, name=NULL) {
-  gTree(
-    nlevels=nlevels, breaks=breaks, cols=cols, scale=scale, 
-    children=ribbonKids(nlevels, breaks, cols, scale),
-    childrenvp=ribbonVps(nlevels, breaks, margin, scale),
-    gp=gp, vp=vp, name=name, cl="ribbonLegend")
+figure8.20 <- function() {
+utextDynamic <- function(label,
+                         x=.5, y=.5, default.units="npc",
+                         just="centre", name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    gTree(label=label, x=x, y=y, just=just, 
+          cl="utextDynamic", name=name)
 }
 
-widthDetails.ribbonLegend <- function(x) { 
-  sum(layout.widths(viewport.layout(x$childrenvp[[1]]))) 
-} 
-
-
-grid.ozGrob(oz::ozRegion())
-downViewport("ozvp")
-for (i in 1:(dim(RGraphics::ozTemp)[1])) {
-  grid.points(RGraphics::ozTemp$long[i], RGraphics::ozTemp$lat[i], pch=16)
-  rl <- ribbonLegend(breaks=c(min(RGraphics::ozTemp$min), 
-                              RGraphics::ozTemp$min[i], 
-                              RGraphics::ozTemp$max[i], 
-                              max(RGraphics::ozTemp$max)),
-                     cols=c("white", "gray", "white"),
-                     gp=gpar(cex=.7))
-  pushViewport(viewport(x=unit(RGraphics::ozTemp$long[i], "native"),
-                        y=unit(RGraphics::ozTemp$lat[i], "native"),
-                        height=unit(1, "in"),
-                        width=grobWidth(rl),
-                        clip="off"))
-  grid.circle(r=1, 
-              gp=gpar(col="gray", fill="white", alpha=0.8))
-  grid.draw(rl)
-  popViewport()
+makeContent.utextDynamic <- function(x) {
+    kids <- utextChildren(x$label, x$x, x$y, 
+                          just=x$just, x$name) 
+    setChildren(x, kids) 
 }
-upViewport(0)
 
+
+ug <- utextDynamic("underlined text")
+grid.draw(ug)
+
+
+grid.newpage()
+grid.rect(gp=gpar(col="grey"))
+ug <- utextDynamic("underlined text")
+grid.draw(ug)
+
+
+}
+figure8.21 <- function() {
+utextChildren <- function(label, x, y, just, name) {
+    t <- textGrob(label, x, y, just=just,
+                  name=paste0(name, ".label"))
+    corners <- textCorners(t)
+    s <- segmentsGrob(corners$xl, 
+                      corners$yb - unit(.2, "lines"),
+                      corners$xr, 
+                      corners$yb - unit(.2, "lines"),
+                      name=paste0(name, ".underline"))
+    gList(t, s)
+}
+    
+utextStatic <- function(label,
+                        x=.5, y=.5, default.units="npc",
+                        just="centre", name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    kids <- utextChildren(label, x, y, just, name)
+    gTree(label=label, x=x, y=y, just=just, 
+          children=kids, cl="utextStatic", name=name)
+}
+
+
+utextDynamic <- function(label,
+                         x=.5, y=.5, default.units="npc",
+                         just="centre", name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    gTree(label=label, x=x, y=y, just=just, 
+          cl="utextDynamic", name=name)
+}
+
+makeContent.utextDynamic <- function(x) {
+    kids <- utextChildren(x$label, x$x, x$y, 
+                          just=x$just, x$name) 
+    setChildren(x, kids) 
+}
+
+
+ug <- utextDynamic("underlined text")
+grid.draw(ug)
+
+
+grid.edit("utext", gp=gpar(col="grey"))
+
+
+}
+figure8.22 <- function() {
+utextDynamic <- function(label,
+                         x=.5, y=.5, default.units="npc",
+                         just="centre", name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    gTree(label=label, x=x, y=y, just=just, 
+          cl="utextDynamic", name=name)
+}
+
+makeContent.utextDynamic <- function(x) {
+    kids <- utextChildren(x$label, x$x, x$y, 
+                          just=x$just, x$name) 
+    setChildren(x, kids) 
+}
+
+
+ug <- utextDynamic("underlined text")
+grid.draw(ug)
+
+
+grid.edit("utext", gp=gpar(col="grey"))
+
+
+grid.edit("utext", label="le texte soulign\U00E9")
+
+
+}
+figure8.23 <- function() {
+utextDynamic <- function(label,
+                         x=.5, y=.5, default.units="npc",
+                         just="centre", name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    gTree(label=label, x=x, y=y, just=just, 
+          cl="utextDynamic", name=name)
+}
+
+makeContent.utextDynamic <- function(x) {
+    kids <- utextChildren(x$label, x$x, x$y, 
+                          just=x$just, x$name) 
+    setChildren(x, kids) 
+}
+
+
+ug <- utextDynamic("underlined text")
+grid.draw(ug)
+
+
+grid.edit("utext", gp=gpar(col="grey"))
+
+
+grid.edit("utext", label="le texte soulign\U00E9")
+
+
+grid.force()
+
+
+grid.edit("utext.underline", gp=gpar(lwd=3))
+
+
+}
+utextvpDynamic <- function(label,
+                           x=.5, y=.5, default.units="npc",
+                           just="centre", angle=0, 
+                           name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    gTree(label=label, x=x, y=y, just=just, angle=angle, 
+          cl="utextvpDynamic", name=name)
+}
+
+makeContext.utextvpDynamic <- function(x) {
+    x$childrenvp <- utextvp(x$label, x$x, x$y, 
+                            just=x$just, angle=x$angle,
+                            name=paste0(x$name, ".vp"))
+    x
+}
+
+makeContent.utextvpDynamic <- function(x) {
+    kids <- utextvpChildren(x$label, x$name)
+    setChildren(x, kids)
+}
+
+
+figure8.25 <- function() {
+utextvpDynamic <- function(label,
+                           x=.5, y=.5, default.units="npc",
+                           just="centre", angle=0, 
+                           name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    gTree(label=label, x=x, y=y, just=just, angle=angle, 
+          cl="utextvpDynamic", name=name)
+}
+
+makeContext.utextvpDynamic <- function(x) {
+    x$childrenvp <- utextvp(x$label, x$x, x$y, 
+                            just=x$just, angle=x$angle,
+                            name=paste0(x$name, ".vp"))
+    x
+}
+
+makeContent.utextvpDynamic <- function(x) {
+    kids <- utextvpChildren(x$label, x$name)
+    setChildren(x, kids)
+}
+
+
+ug <- utextvpDynamic("underlined text", angle=20)
+grid.draw(ug)
+
+
+grid.newpage()
+grid.rect(gp=gpar(col="grey"))
+ug <- utextvpDynamic("underlined text", angle=20)
+grid.draw(ug)
+
+
+}
+figure8.26 <- function() {
+utextvpDynamic <- function(label,
+                           x=.5, y=.5, default.units="npc",
+                           just="centre", angle=0, 
+                           name="utext") {
+    if (!is.unit(x)) x <- unit(x, default.units)
+    if (!is.unit(y)) y <- unit(y, default.units)
+    gTree(label=label, x=x, y=y, just=just, angle=angle, 
+          cl="utextvpDynamic", name=name)
+}
+
+makeContext.utextvpDynamic <- function(x) {
+    x$childrenvp <- utextvp(x$label, x$x, x$y, 
+                            just=x$just, angle=x$angle,
+                            name=paste0(x$name, ".vp"))
+    x
+}
+
+makeContent.utextvpDynamic <- function(x) {
+    kids <- utextvpChildren(x$label, x$name)
+    setChildren(x, kids)
+}
+
+
+ug <- utextvpDynamic("underlined text", angle=20)
+grid.draw(ug)
+
+
+grid.force()
+
+
+downViewport("utext.vp")
+grid.segments(0, unit(-.3, "lines"), 1, unit(-.3, "lines"))
+
+
+grid.rect(gp=gpar(col="grey"))
+ug <- utextvpDynamic("underlined text", angle=20)
+grid.draw(ug)
+downViewport("utext.vp")
+grid.segments(0, unit(-.3, "lines"), 1, unit(-.3, "lines"))
+
+
+}
+xDetails.utextvpDynamic <- function(x, theta) {
+    h <- unit(1, "npc") + unit(.2, "lines")
+    grobX(rectGrob(height=h, y=1, just="top",
+                   vp=paste0(x$name, ".vp")), theta)
+}
+
+yDetails.utextvpDynamic <- function(x, theta) {
+    h <- unit(1, "npc") + unit(.2, "lines")
+    grobY(rectGrob(height=h, y=1, just="top",
+                   vp=paste0(x$name, ".vp")), theta)
+}
+
+
+figure8.28 <- function() {
+xDetails.utextvpDynamic <- function(x, theta) {
+    h <- unit(1, "npc") + unit(.2, "lines")
+    grobX(rectGrob(height=h, y=1, just="top",
+                   vp=paste0(x$name, ".vp")), theta)
+}
+
+yDetails.utextvpDynamic <- function(x, theta) {
+    h <- unit(1, "npc") + unit(.2, "lines")
+    grobY(rectGrob(height=h, y=1, just="top",
+                   vp=paste0(x$name, ".vp")), theta)
+}
+
+
+ug <- utextvpDynamic("underlined text")
+grid.draw(ug)
+grid.circle(.1, .8, r=unit(1, "mm"), gp=gpar(fill="black"))
+grid.segments(.1, .8, 
+              grobX("utext", 180), grobY("utext", 270))
+
+
+grid.rect(gp=gpar(col="grey"))
+ug <- utextvpDynamic("underlined text")
+grid.draw(ug)
+grid.circle(.1, .8, r=unit(1, "mm"), gp=gpar(fill="black"))
+grid.segments(.1, .8, 
+              grobX("utext", 180), grobY("utext", 270))
 
 
 }
 splitString <- function(text) {
   strings <- strsplit(text, " ")[[1]]
+  if (length(strings) < 2)
+    return(text)
   newstring <- strings[1]
   linewidth <- stringWidth(newstring)
   gapwidth <- stringWidth(" ")
@@ -5381,9 +5259,11 @@ splitString <- function(text) {
 }   
 
 
-figure8.20 <- function() {
+figure8.30 <- function() {
 splitString <- function(text) {
   strings <- strsplit(text, " ")[[1]]
+  if (length(strings) < 2)
+    return(text)
   newstring <- strings[1]
   linewidth <- stringWidth(newstring)
   gapwidth <- stringWidth(" ")
@@ -5413,14 +5293,9 @@ grid.text(splitString(text),
 
 
 
-splitTextGrob <- function(text, ...) {
-  grob(text=text, cl="splitText", ...)
-}
+splitText <- splitTextGrob(text, name="splitText")
+grid.draw(splitText)
 
-drawDetails.splitText <- function(x, recording) {
-  grid.text(splitString(x$text),
-            x=0, y=1, just=c("left", "top")) 
-}
 
 
 pushViewport(viewport(layout=grid.layout(2, 2)))
@@ -5450,35 +5325,17 @@ popViewport()
 
 }
 splitTextGrob <- function(text, ...) {
-  grob(text=text, cl="splitText", ...)
+    gTree(text=text, cl="splitText", ...)
 }
 
-drawDetails.splitText <- function(x, recording) {
-  grid.text(splitString(x$text),
-            x=0, y=1, just=c("left", "top")) 
-}
-
-
-figure8.22 <- function() {
-faceA <- function(x, y, width, height) {
-  pushViewport(viewport(x=x, y=y, 
-                        width=width, height=height))
-  grid.rect()
-  grid.circle(x=c(0.25, 0.75), y=0.75, r=0.1)
-  grid.lines(x=c(0.33, 0.67), y=0.25)
-  popViewport()
-}
-
-faceB <- function(x, y, width, height) {
-  pushViewport(viewport(x=x, y=y, 
-                        width=width, height=height))
-  grid.draw(rectGrob())
-  grid.draw(circleGrob(x=c(0.25, 0.75), y=0.75, r=0.1))
-  grid.draw(linesGrob(x=c(0.33, 0.67), y=0.25))
-  popViewport()
+makeContent.splitText <- function(x) {
+    setChildren(x, gList(textGrob(splitString(x$text),
+                                  x=0, y=1, 
+                                  just=c("left", "top"))))
 }
 
 
+figure8.32 <- function() {
 faceA(.5, .5, width=.1, height=.1)
 angle <- seq(0, 2*pi, length=9)[-9]
 for (i in angle) {
@@ -5494,31 +5351,32 @@ grid.rect(width=.9, height=.9, gp=gpar(col="gray", fill=NA))
 faceA <- function(x, y, width, height) {
   pushViewport(viewport(x=x, y=y, 
                         width=width, height=height))
-  grid.rect()
+  grid.rect() 
   grid.circle(x=c(0.25, 0.75), y=0.75, r=0.1)
-  grid.lines(x=c(0.33, 0.67), y=0.25)
+  grid.lines(x=c(0.33, 0.67), y=0.25) 
   popViewport()
 }
 
 faceB <- function(x, y, width, height) {
   pushViewport(viewport(x=x, y=y, 
                         width=width, height=height))
-  grid.draw(rectGrob())
+  grid.draw(rectGrob()) 
   grid.draw(circleGrob(x=c(0.25, 0.75), y=0.75, r=0.1))
-  grid.draw(linesGrob(x=c(0.33, 0.67), y=0.25))
+  grid.draw(linesGrob(x=c(0.33, 0.67), y=0.25)) 
   popViewport()
 }
 
 
 faceC <- function(x, y, width, height) {
-  gTree(childrenvp=viewport(x=x, y=y,
-                            width=width, height=height,
-                            name="face"),
-        children=gList(rectGrob(vp="face"),
-                       circleGrob(x=c(0.25, 0.75), 
-                                  y=0.75, r=0.1, vp="face"),
-                       linesGrob(x=c(0.33, 0.67), y=0.25,
-                                 vp="face")))
+    gTree(childrenvp=viewport(x=x, y=y,
+                              width=width, height=height,
+                              name="face"),
+          children=gList(rectGrob(vp="face"), 
+                         circleGrob(x=c(0.25, 0.75), 
+                                    y=0.75, r=0.1, 
+                                    vp="face"),
+                         linesGrob(x=c(0.33, 0.67), y=0.25,
+                                   vp="face"))) 
 }
 
 faceD <- function(x, y, width, height) {
@@ -5534,357 +5392,7 @@ faceD <- function(x, y, width, height) {
                 })
 }
 
-drawDetails.face <- function(x, recording) {
-  pushViewport(viewport(x=x$x, y=x$y,
-                        width=x$width, height=x$height))
-  grid.rect()
-  grid.circle(x=c(0.25, 0.75), y=0.75, r=0.1)
-  grid.lines(x=c(0.33, 0.67), y=0.25)
-  popViewport()  
-}
 
-faceE <- function(x, y, width, height) {
-  grob(x=x, y=y, width=width, height=height, cl="face")
-}
-
-
-figure8.25 <- function() {
-faceA <- function(x, y, width, height) {
-  pushViewport(viewport(x=x, y=y, 
-                        width=width, height=height))
-  grid.rect()
-  grid.circle(x=c(0.25, 0.75), y=0.75, r=0.1)
-  grid.lines(x=c(0.33, 0.67), y=0.25)
-  popViewport()
-}
-
-faceB <- function(x, y, width, height) {
-  pushViewport(viewport(x=x, y=y, 
-                        width=width, height=height))
-  grid.draw(rectGrob())
-  grid.draw(circleGrob(x=c(0.25, 0.75), y=0.75, r=0.1))
-  grid.draw(linesGrob(x=c(0.33, 0.67), y=0.25))
-  popViewport()
-}
-
-
-grid.newpage()
-grid.draw(faceC(.5, .5, .5, .5))
-
-grid.rect(gp=gpar(col="gray", fill=NA))
-
-
-
-}
-figure8.26 <- function() {
-pdf("Figures/interactgrid-latticevps-%d.pdf", onefile=FALSE)
-print(
-xyplot(pressure ~ temperature, pressure)
-
-)
-showViewport(newpage=TRUE, 
-             col="black",
-             fill=rgb(.5, .5, .5, .2))
-dev.off()
-png("Web/interactgrid-latticevps%d.png")
-print(
-xyplot(pressure ~ temperature, pressure)
-
-)
-showViewport(newpage=TRUE, 
-             col="black",
-             fill=rgb(.5, .5, .5, .2))
-dev.off()
-system("rm Web/interactgrid-latticevps1.png")
-
-
-
-}
-figure8.27 <- function() {
-pdf("Figures/interactgrid-latticeleaves-%d.pdf", onefile=FALSE)
-print(
-xyplot(pressure ~ temperature, pressure)
-
-)
-showViewport(newpage=TRUE, leaves=TRUE,
-             col="black",
-             fill=rgb(.5, .5, .5, .2))
-dev.off()
-png("Web/interactgrid-latticeleaves%d.png")
-print(
-xyplot(pressure ~ temperature, pressure)
-
-)
-showViewport(newpage=TRUE, leaves=TRUE,
-             col="black",
-             fill=rgb(.5, .5, .5, .2))
-dev.off()
-system("rm Web/interactgrid-latticeleaves1.png")
-
-
-
-
-}
-figure17.1 <- function() {
-
-n <- 40
-t <- seq(0, 2*pi, length=n)
-x <- cos(t)
-y <- sin(t)
-
-
-
-for (i in 1:n) {
-    plot.new()
-    plot.window(c(-1, 1), c(-1, 1))
-    lines(x, y)
-    points(x[i], y[i], pch=16, cex=2)
-    Sys.sleep(.05)
-}
-
-
-
-}
-figure17.2 <- function() {
-
-
-
-
-
-n <- 40
-t <- seq(0, 2*pi, length=n)
-x <- cos(t)
-y <- sin(t)
-
-
-
-orbit <- function() {
-    par(pty="s", mar=rep(1, 4))
-    for (i in 1:n) {
-        plot.new()
-        plot.window(c(-1, 1), c(-1, 1))
-        lines(x, y)
-        points(x[i], y[i], pch=16, cex=2)
-    }
-}
-
-
-
-animation::ani.options(interval=0.05, outdir="orbitImages",
-            filename="orbit.html")
-animation::ani.start()
-orbit()
-animation::ani.stop()
-
-
-}
-figure17.3 <- function() {
-plot(mpg ~ disp, mtcars)
-points(mpg ~ disp, mtcars, subset=gear == 3, pch=16)
-
-
-
-plot(mpg ~ disp, mtcars)
-points(mpg ~ disp, mtcars, subset=gear == 4, pch=16)
-
-
-
-}
-figure17.4 <- function() {
-trellis.par.set(theme = canonical.theme("postscript", color=FALSE))
-print(
-xyplot(mpg ~ disp | factor(gear), mtcars, subset=gear != 5, pch=16)
-
-)
-
-
-
-}
-figure17.5 <- function() {
-
-mtcars$gear <- factor(mtcars$gear)
-mtcars$cyl <- factor(mtcars$cyl)
-gg <- rggobi::ggobi(mtcars)
-
-
-}
-figure17.6 <- function() {
-
-
-
-}
-figure17.7 <- function() {
-
-
-
-
-gg <- rggobi::ggobi(mtcars)
-
-
-}
-figure17.8 <- function() {
-
-
-
-
-iplots::iplot(mtcars$disp, mtcars$mpg)
-iplots::ibar(mtcars$gear)
-
-
-}
-figure17.9 <- function() {
-
-
-
-
-iplots::iplot(mtcars$disp, mtcars$mpg)
-iplots::ibar(mtcars$gear)
-
-
-iplots::iplot.set(1)
-
-
-
-labels <- mapply("itext", 
-                 mtcars$disp, mtcars$mpg, rownames(mtcars), 
-                 MoreArgs=list(visible=FALSE), SIMPLIFY=FALSE)
-olds <- NULL
-while (!is.null(iplots::ievent.wait())) {
-    if (iplots::iset.sel.changed()) {
-        s <- iplots::iset.selected()
-        if (length(s) > 1) {
-            lapply(labels[s], iplots::iobj.opt, visible = TRUE)
-        }
-        if (length(olds) > 1) {
-            lapply(labels[olds], iplots::iobj.opt, visible = FALSE)
-        }
-        olds <- s
-    }
-}
-
-
-}
-figure17.10 <- function() {
-
-
-
-}
-figure17.11 <- function() {
-
-
-
-}
-figure17.12 <- function() {
-# library(latticist)
-# latticist(mtcars, list(xvar="disp", yvar="mpg"), 
-#           use.playwith=FALSE)
-# 
-# 
-}
-figure17.13 <- function() {
-
-playwith::playwith(xyplot(mpg ~ disp, mtcars))
-playwith::playwith(xyplot(qsec ~ wt, mtcars), 
-         new=TRUE, link.to=playwith::playDevCur())
-
-
-}
-figure17.15 <- function() {
-drawClock <- function(hour, minute) {
-    t <- seq(0, 2*pi, length=13)[-13]
-    x <- cos(t)
-    y <- sin(t)
-
-    grid.newpage()
-    pushViewport(dataViewport(x, y, gp=gpar(lwd=4)))
-    # Circle with ticks
-    grid.circle(x=0, y=0, default.units="native", 
-                r=unit(1, "native"))
-    grid.segments(x, y, x*.9, y*.9, default.units="native")
-    # Hour hand
-    hourAngle <- pi/2 - (hour + minute/60)/12*2*pi
-    grid.segments(0, 0, 
-                  .6*cos(hourAngle), .6*sin(hourAngle), 
-                  default.units="native", gp=gpar(lex=4))
-    # Minute hand
-    minuteAngle <- pi/2 - (minute)/60*2*pi
-    grid.segments(0, 0, 
-                  .8*cos(minuteAngle), .8*sin(minuteAngle), 
-                  default.units="native", gp=gpar(lex=2))    
-    grid.circle(0, 0, default.units="native", r=unit(1, "mm"),
-                gp=gpar(fill="white"))
-}
-
-
-
-
-
-
-window <- gWidgets::gwindow("Clock")
-
-
-
-allContent <- gWidgets::ggroup(container=window, horizontal=FALSE)
-
-
-
-graphicTime <- gWidgets::ggraphics(container=allContent)
-
-
-
-timeContent <- gWidgets::ggroup(container=allContent)
-
-
-
-textLabel <- gWidgets::glabel("")
-
-
-
-randomizeTime <- function(h, ...) {
-    hour <- sample(1:12, 1)
-    minute <- sample(seq(0, 55, 5), 1)
-    drawClock(hour, minute)
-    gWidgetsRGtk2::visible(textLabel) <- FALSE
-    gWidgetsRGtk2::svalue(textLabel) <- paste(hour, 
-                               sprintf("%02d", minute), 
-                               sep=":")
-}
-
-
-
-reset <- gWidgets::gbutton("Randomize Time", 
-                 handler=randomizeTime)
-
-
-
-textButton <- gWidgets::gbutton("Show Time", 
-                      handler=function(h, ...) {
-                          gWidgetsRGtk2::visible(textLabel) <- TRUE
-                      })
-
-
-gWidgetsRGtk2::add(timeContent, reset)
-gWidgetsRGtk2::add(timeContent, textButton)
-gWidgetsRGtk2::add(timeContent, textLabel)
-
-
-
-}
-figure17.16 <- function() {
-
-
-
-
-doc <- SVGAnnotation::svgPlot({ par(mfrow=c(2, 1), cex=.7,     
-                     mar=c(5.1, 4.1, 1, 1))
-                 plot(mpg ~ disp, mtcars, cex=2)
-                 plot(qsec ~ wt, mtcars, cex=2) },
-               width=4, height=8)
-SVGAnnotation::linkPlots(doc)
-XML::saveXML(doc, "linkedplots.svg")
-
-
-}
 figure1.1 <- function() {
 plot(pressure)
 text(150, 600, 
@@ -5893,286 +5401,35 @@ text(150, 600,
 
 
 }
-figure14.1 <- function() {
-
-colorado <- maptools::readShapeSpatial(system.file("extra", "10m-colorado.shp",
-                                         package="RGraphics"))
-par(mar=rep(0, 4))
-sp::plot(colorado, col="gray")
-
-
-
-}
-figure14.2 <- function() {
-
-
-
-
-
-par(mar=rep(0, 4))
-maps::map(regions="Brazil", fill=TRUE, col="gray")
-
-box("figure", col="gray", lwd=2)
-
-
-
-}
-figure14.3 <- function() {
-
-
-
-
-brazil <- 
-    maptools::readShapeSpatial(system.file("extra", "10m-brazil.shp",
-                                 package="RGraphics"))
-
-
-
-par(mar=rep(0, 4))
-# Need to spec. sp:: here so that code works in 'RGraphics' package
-sp::plot(brazil, col="gray")
-box("figure", col="gray", lwd=2)
-
-
-
-}
-figure14.4 <- function() {
-
-
-
-
-brazil <- 
-    maptools::readShapeSpatial(system.file("extra", "10m-brazil.shp",
-                                 package="RGraphics"))
-
-
-
-print(
-sp::spplot(brazil, "Regions", col.regions=gray(5:1/6))
-
-)
-
-
-
-}
-figure14.5 <- function() {
-
-
-
-
-brazil <- 
-    maptools::readShapeSpatial(system.file("extra", "10m-brazil.shp",
-                                 package="RGraphics"))
-
-
-
-brazilRegions <- 
-    maptools::readShapeSpatial(system.file("extra", 
-                                 "10m_brazil_regions.shp",
-                                 package="RGraphics"))
-
-
-brazilCapitals <- 
-    maptools::readShapeSpatial(system.file("extra",
-                                 "10m_brazil_capitals.shp",
-                                 package="RGraphics"))
-
-
-
-
-print(
-sp::spplot(brazil, "Regions", 
-       col.regions=gray.colors(5, 0.8, 0.3),
-       col="white", 
-       panel=function(...) {
-           sp::panel.polygonsplot(...)
-           sp::sp.lines(brazilRegions, col="gray40")
-           labels <- brazilCapitals$Name
-           w <- stringWidth(labels)
-           h <- stringHeight(labels)
-           locs <- sp::coordinates(brazilCapitals)
-           grid.rect(unit(locs[, 1], "native"),
-                     unit(locs[, 2], "native"),
-                     w, h, just=c("right", "top"),
-                     gp=gpar(col=NA, fill=rgb(1, 1, 1, .5)))
-           sp::sp.text(locs, labels, adj=c(1, 1))
-           sp::sp.points(brazilCapitals, pch=21,
-                     col="black", fill="white")
-       })
-
-
-)
-
-
-
-}
-figure14.6 <- function() {
-
-
-
-
-marajo <- 
-    maptools::readShapeSpatial(system.file("extra", "marajo.shp",
-                                 package="RGraphics"))
-
-
-
-par(mar=rep(0, 4))
-sp::plot(marajo, col="gray", pbg="white")
-
-
-
-}
-figure14.7 <- function() {
-
-
-
-
-iceland <- 
-    maptools::readShapeSpatial(system.file("extra", "10m-iceland.shp",
-                                 package="RGraphics"))
-
-
-
-par(mar=rep(0, 4))
-sp::plot(iceland, col="gray")
-
-
-
-}
-figure14.8 <- function() {
-
-
-
-
-iceland <- 
-    maptools::readShapeSpatial(system.file("extra", "10m-iceland.shp",
-                                 package="RGraphics"))
-
-
-
-sp::proj4string(iceland) <- sp::CRS("+proj=longlat +ellps=WGS84")
-
-
-
-par(mar=rep(0, 4))
-sp::plot(iceland, col="gray")
-
-
-
-}
-figure14.9 <- function() {
-
-
-
-
-iceland <- 
-    maptools::readShapeSpatial(system.file("extra", "10m-iceland.shp",
-                                 package="RGraphics"))
-
-
-
-sp::proj4string(iceland) <- sp::CRS("+proj=longlat +ellps=WGS84")
-
-
-
-icelandMercator <- sp::spTransform(iceland, 
-                               sp::CRS("+proj=merc +ellps=GRS80"))
-
-
-
-par(mar=rep(0, 4))
-sp::plot(iceland, col="gray80", border="white", lwd=3)
-par(new=TRUE)
-sp::plot(icelandMercator)
-
-
-
-}
-figure14.10 <- function() {
-
-
-
-
-
-
-
-
-brazil <- 
-    maptools::readShapeSpatial(system.file("extra", "10m-brazil.shp",
-                                 package="RGraphics"))
-
-
-
-sp::proj4string(brazil) <- sp::CRS("+proj=longlat +ellps=WGS84")
-
-
-
-glines <- sp::gridlines(brazil)
-glinesOrtho <- sp::spTransform(glines, sp::CRS("+proj=ortho"))
-par(mar=rep(0, 4))
-brazilOrtho <- sp::spTransform(brazil, sp::CRS("+proj=ortho"))
-sp::plot(brazilOrtho, col="gray")
-sp::plot(glinesOrtho, lty="dashed", add=TRUE)
-
-
-
-}
-figure14.11 <- function() {
-
-
-
-
-
-
-
-
-brazil <- 
-    maptools::readShapeSpatial(system.file("extra", "10m-brazil.shp",
-                                 package="RGraphics"))
-
-
-
-# Read in prepared raster
-brazilRelief <- raster::raster(system.file("extra", "brazilRelief.tif",
-                                   package="RGraphics"))
-
-
-
-# Make PNG version for this one because otherwise it's TOO big
-png("Figures/maps-brazilraster.png",
-    width=900, height=900)
-par(mar=rep(0, 4))
-raster::image(brazilRelief, col=gray(0:255/255), maxpixels=1e6)
-sp::plot(brazil, add=TRUE)
-box(lwd=4)
-dev.off()
-system("cp Figures/maps-brazilraster.png Web/")
-
-
-}
 figure7.1 <- function() {
 grid.rect(gp=gpar(col="gray"))
-grid.circle(name="circles", x=seq(0.1, 0.9, length=40), 
-            y=0.5 + 0.4*sin(seq(0, 2*pi, length=40)),
-            r=abs(0.1*cos(seq(0, 2*pi, length=40))))
+grid.circle(r=.4, name="mycircle")
+grid.edit("mycircle", 
+          gp=gpar(fill="grey"))
 
-grid.edit("circles", 
-          gp=gpar(col=gray(c(1:20*0.04, 20:1*0.04))))
-
-grid.remove("circles")
+grid.remove("mycircle")
 
 
 
 
 }
 figure7.2 <- function() {
+
+print(
+xyplot(mpg ~ disp, mtcars)
+)
+
+
+}
+figure7.3 <- function() {
+suffix <- rep(c("odd", "even"), 4)
+names <- paste0("circle.", suffix)
+names
+
+
 grid.rect(gp=gpar(col="gray"))
-suffix <- c("even", "odd")
 for (i in 1:8)
-  grid.circle(name=paste("circle.", suffix[i %% 2 + 1], 
-                         sep=""),
-              r=(9 - i)/20, 
+  grid.circle(name=names[i], r=(9 - i)/20, 
               gp=gpar(col=NA, fill=gray(i/10)))
 
 grid.edit("circle.odd", gp=gpar(fill="gray10"), 
@@ -6185,7 +5442,7 @@ grid.edit("circle", gp=gpar(col="gray", fill="gray90"),
 
 
 }
-figure7.3 <- function() {
+figure7.4 <- function() {
 labels <- c("\"xaxis1\"\nxaxis gTree", "\"major\"\nlines grob", 
             "\"ticks\"\nlines grob", "\"labels\"\ntext grob")
 names <- c("", "major", "ticks", "labels")
@@ -6253,7 +5510,7 @@ popViewport()
 
 
 }
-figure7.4 <- function() {
+figure7.5 <- function() {
 grid.rect(gp=gpar(col="gray"))
 pushViewport(viewport(just="bottom", gp=gpar(cex=0.7)))
 grid.xaxis(name="axis1", at=1:4/5)
@@ -6268,78 +5525,75 @@ popViewport()
 
 
 }
-figure7.5 <- function() {
-tg <- textGrob("sample text")
-rg <- rectGrob(width=1.1*grobWidth(tg), 
-               height=1.3*grobHeight(tg))
-boxedText <- gTree(children=gList(tg, rg))
-
-
-
-pushViewport(viewport(layout=grid.layout(1, 7,
-                                         heights=unit(1.25, "in"),
-                                         widths=unit(rep(c(1, 1.25), length=7),
-                                                     rep(c("null", "in"),
-                                                           length=7)))))
-pushViewport(viewport(layout.pos.col=2, gp=gpar(fill=NA)))
-grid.rect(gp=gpar(col="gray", fill=NA))
-grid.draw(boxedText)
-
-popViewport()
-pushViewport(viewport(layout.pos.col=4, gp=gpar(fill=NA)))
-grid.rect(gp=gpar(col="gray", fill=NA))
-grid.draw(editGrob(boxedText, gp=gpar(col="gray")))
-
-popViewport()
-pushViewport(viewport(layout.pos.col=6, gp=gpar(fill=NA)))
-grid.rect(gp=gpar(col="gray", fill=NA))
-grid.draw(editGrob(boxedText, vp=viewport(angle=45),
-                   gp=gpar(fontsize=18)))
-              
-popViewport()
-popViewport()
-                             
-
-
-}
 figure7.6 <- function() {
-label <- textGrob("A\nPlot\nLabel ",
-                  x=0, just="left")
-x <- seq(0.1, 0.9, length=50)
-y <- runif(50, 0.1, 0.9)
-gplot <- 
-  gTree(
-    children=gList(rectGrob(gp=gpar(col="gray60",
-                                    fill="white")),
-                   linesGrob(x, y), 
-                   pointsGrob(x, y, pch=16, 
-                              size=unit(1.5, "mm"))),
-    vp=viewport(width=unit(1, "npc") - unit(5, "mm"), 
-                height=unit(1, "npc") - unit(5, "mm")))
+grid.rect(gp=gpar(col="gray"))
+pushViewport(viewport(just="bottom", gp=gpar(cex=0.7)))
+grid.xaxis(name="axis2", at=1:4/5)
 
-
-
-layout <- grid.layout(1, 2,
-                      widths=unit(c(1, 1), 
-                                  c("null", "grobwidth"),
-                                  list(NULL, label)))
-
-
-
-grid.rect(gp=gpar(col="gray60", fill="gray90"))
-pushViewport(viewport(layout=layout))
-pushViewport(viewport(layout.pos.col=2))
-grid.draw(label)
+grid.edit("axis2", gp=gpar(col="gray"))
+grid.edit("axis2::labels", gp=gpar(col="black"))
 popViewport()
-pushViewport(viewport(layout.pos.col=1))
-grid.draw(gplot)
-popViewport(2)
-
 
 
 
 }
 figure7.7 <- function() {
+grid.circle(r=0.3, gp=gpar(fill="gray80"), 
+            name="mycircle")
+grid.edit("mycircle", gp=gpar(lwd=5))
+grid.edit("mycircle", gp=gpar(lty="dashed"))
+
+
+
+grid.rect(gp=gpar(col="gray"))
+grid.circle(r=0.3, gp=gpar(fill="gray80"), 
+            name="mycircle")
+grid.edit("mycircle", gp=gpar(lwd=5))
+grid.edit("mycircle", gp=gpar(lty="dashed"))
+
+
+
+
+}
+figure7.8 <- function() {
+pushViewport(viewport(xscale=c(0, 100)))
+grid.rect(name="rect")
+grid.xaxis(name="axis3")
+
+
+grid.rect(gp=gpar(col="grey"))
+pushViewport(viewport(just="bottom", width=.8, height=.4, gp=gpar(cex=.7)))
+pushViewport(viewport(xscale=c(0, 100)))
+grid.rect(name="rect")
+grid.xaxis(name="axis3")
+
+
+}
+figure7.9 <- function() {
+r1 <- rectGrob(height=.2, gp=gpar(fill="black"), name="r1")
+r2 <- rectGrob(width=.2, gp=gpar(fill="grey"), name="r2")
+r3 <- rectGrob(width=.4, height=.4, gp=gpar(fill="white"),
+               name="r3")
+gt <- gTree(children=gList(r1, r2, r3), name="gt")
+grid.draw(gt)
+
+
+grid.reorder("gt", c("r3", "r2", "r1"))
+
+
+grid.rect(gp=gpar(col="gray"))
+r1 <- rectGrob(height=.2, gp=gpar(fill="black"), name="r1")
+r2 <- rectGrob(width=.2, gp=gpar(fill="grey"), name="r2")
+r3 <- rectGrob(width=.4, height=.4, gp=gpar(fill="white"),
+               name="r3")
+gt <- gTree(children=gList(r1, r2, r3), name="gt")
+grid.draw(gt)
+grid.reorder("gt", c("r3", "r2", "r1"))
+
+
+
+}
+figure7.10 <- function() {
 tg1 <- textGrob("Sample")
 rg1 <- rectGrob(x=rep(0.5, 2),
                 width=1.1*grobWidth(tg1), 
@@ -6381,7 +5635,7 @@ popViewport()
 
 
 }
-figure7.8 <- function() {
+figure7.11 <- function() {
 tg1 <- textGrob("Sample", name="tg1")
 rg1 <- rectGrob(width=1.1*grobWidth("tg1"), 
                 height=1.3*grobHeight("tg1"),
@@ -6406,7 +5660,7 @@ popViewport()
 
 
 }
-figure7.9 <- function() {
+figure7.12 <- function() {
 grid.rect(gp=gpar(col="gray"))
 pushViewport(viewport(gp=gpar(fill=NA)))
 grid.circle(.25, .5, r=unit(1, "mm"), 
@@ -6427,7 +5681,7 @@ grid.segments(.25, .5,
 
 
 }
-figure7.10 <- function() {
+figure7.13 <- function() {
 pushViewport(viewport(gp=gpar(fill=NA)))
 vptop <- viewport(width=.9, height=.4, y=.75,
                   name="vptop")
@@ -6462,43 +5716,63 @@ grid.polygon(unit.c(grobX("tl", 0),
 
 
 }
-figure7.11 <- function() {
-grid.rect(gp=gpar(col="gray"))
-grid.circle(r=0.3, gp=gpar(fill="gray80"), 
-            name="mycircle")
-grid.edit("mycircle", gp=gpar(lwd=5))
-grid.edit("mycircle", gp=gpar(lty="dashed"))
+figure7.14 <- function() {
+label <- textGrob("A\nPlot\nLabel ",
+                  x=0, just="left")
+x <- seq(0.1, 0.9, length=50)
+y <- runif(50, 0.1, 0.9)
+gplot <- 
+  gTree(
+    children=gList(rectGrob(gp=gpar(col="gray60",
+                                    fill="white")),
+                   linesGrob(x, y), 
+                   pointsGrob(x, y, pch=16, 
+                              size=unit(1.5, "mm"))),
+    vp=viewport(width=unit(1, "npc") - unit(5, "mm"), 
+                height=unit(1, "npc") - unit(5, "mm")))
+
+
+
+layout <- grid.layout(1, 2,
+                      widths=unit(c(1, 1), 
+                                  c("null", "grobwidth"),
+                                  list(NULL, label)))
+
+
+
+grid.rect(gp=gpar(col="gray60", fill="gray90"))
+pushViewport(viewport(layout=layout))
+pushViewport(viewport(layout.pos.col=2))
+grid.draw(label)
+popViewport()
+pushViewport(viewport(layout.pos.col=1))
+grid.draw(gplot)
+popViewport(2)
 
 
 
 
 }
-figure7.12 <- function() {
-angle <- seq(0, 2*pi, length=21)[-21]
-x <- cos(angle)
-y <- sin(angle)
+figure7.15 <- function() {
 
-
-
-trellis.par.set(theme = canonical.theme("postscript", color=FALSE))
 print(
-xyplot(y ~ x, aspect=1, 
-       xlab="displacement", 
-       ylab="velocity")
+xyplot(mpg ~ disp, mtcars)
 
 )
 grid.edit("[.]xlab$", grep=TRUE, 
+          label="Displacement",
           x=unit(1, "npc"), just="right",
-          gp=gpar(fontfamily="mono"))
-grid.edit("[.]ylab$", grep=TRUE, 
+          gp=gpar(fontface="bold"))
+grid.edit("[.]ylab$", grep=TRUE,
+          label="Miles per Gallon",
           y=unit(1, "npc"), just="right",
-          gp=gpar(fontfamily="mono"))
+          gp=gpar(fontface="bold"))
 
 
 
 
 }
-figure7.13 <- function() {
+figure7.16 <- function() {
 mtcars2 <- mtcars
 mtcars2$trans <- factor(mtcars$am, 
                         levels=0:1, 
@@ -6520,7 +5794,14 @@ ggplot(mtcars2, aes(x=disp, y=mpg)) +
     geom_smooth(method=lm)
 
 )
-downViewport("panel.3-4-3-4")
+# Navigate to ROOT viewport so that this code works for example(figure6.25)
+# in 'RGraphics' package
+upViewport(0)
+grid.force()
+panelvp <- grid.grep("panel", grobs=FALSE, 
+                     viewports=TRUE, grep=TRUE)
+panelvp
+downViewport(panelvp)
 sline <- grid.get(gPath("smooth", "polyline"),
                   grep=TRUE)
 grid.segments(.7, .8, 
@@ -6535,123 +5816,50 @@ grid.text("line of best fit", .71, .81,
 
 }
 figure1.14 <- function() {
-
-
-
-grpkgs <- new("graphNEL", 
-              nodes=c(
-                # engine
-                "grDevices", 
-                # systems
-                "graphics", "grid",
-                # graphics-based packages
-                "maps", "diagram", "plotrix", "gplots", "pixmap", 
-                # grid-based packages
-                "lattice", "ggplot2", "grImport", "gridBase", "vcd",
-                # interface packages
-                "rgl", "rggobi", "iplots",
-                # devices
-                "JavaGD", "Cairo", "tikzDevice"),
-                # ggplot-based packages
-                # "DescribeDisplay",
-                # lattice-based packages
-                # "latticist", "latticeExtra"),
-              edgeL=list(
-                grDevices=list(edges=c("graphics", "grid",
-                                 "JavaGD", "Cairo", "tikzDevice")),
-                graphics=list(edges=c("maps", "diagram", "plotrix",
-                                "gplots", "pixmap", 
-                                "gridBase")),
-                grid=list(edges=c("lattice", "ggplot2", "grImport", "vcd",
-                            "gridBase")),
-                maps=list(),
-                diagram=list(),
-                plotrix=list(),
-                gplots=list(),
-                pixmap=list(),
-                lattice=list(), # edges=c("latticist", "latticeExtra")), 
-#                latticist=list(),
-#                latticeExtra=list(),
-                ggplot2=list(), # edges="DescribeDisplay"),
-                # DescribeDisplay=list(),
-                grImport=list(),
-                gridBase=list(),
-                vcd=list(),
-                # Invisible links to tie interface packages together
-                rgl=list(edges="rggobi"),
-                rggobi=list(edges="iplots"),
-                iplots=list(edges="rgl"),
-#                GDD=list(edges=c("grDevices")),
-#                JavaGD=list(edges=c("grDevices")),
-#                Cairo=list(edges=c("grDevices")),
-#                cairoDevice=list(edges=c("grDevices")),
-#                tikzDevice=list(edges="grDevices")),
-                JavaGD=list(),
-                Cairo=list(),
-                tikzDevice=list()),
-              edgemode="directed")
-
-# systemPkgs <- subGraph(c("graphics", "grid"), grpkgs)
-# graphicsPkgs <- subGraph(c("maps", "diagram", "plotrix",
-#                            "gplots", "pixmap"), grpkgs)
-# gridPkgs <- subGraph(c("grid", "lattice", "ggplot2", "grImport"), grpkgs)
-# 
-# devicePkgs <- subGraph(c("GDD", "JavaGD", "Cairo", 
-#                          "cairoDevice", "tikzDevice"),
-#                        grpkgs)
-interfacePkgs <- graph::subGraph(c("iplots", "rggobi", "rgl"), grpkgs)
-
-ragraph <- Rgraphviz::agopen(grpkgs, name="whatever",
-                  # layoutType="dot", 
-                  layoutType="dot", 
-                  # layoutType="twopi", 
-                  attrs=list(
-                    node=list(fontname="Helvetica", fontsize=10),
-                    edge=list(arrowhead="none"),
-                    # NOTE: size and margins controlled below in call to 'dot'
-                    graph=list(
-                      root="grDevices",
-                      # ratio=3/4,
-                      rankdir="LR")),
-#                      compound=TRUE)),
-                  subGList=list(
-#                    list(graph=devicePkgs), 
-#                    list(graph=systemPkgs),
-#                    list(graph=graphicsPkgs),
-#                    list(graph=gridPkgs),
-                    list(graph=interfacePkgs)))
-
-Rgraphviz::nodeDataDefaults(ragraph, "style") <- "filled"
-Rgraphviz::nodeDataDefaults(ragraph, "fillcolor") <- "gray90"
-Rgraphviz::nodeData(ragraph, c("grDevices", "graphics", "grid", "lattice", "ggplot2"), 
-         "style") <- "filled"
-Rgraphviz::nodeData(ragraph, c("grDevices", "graphics", "grid", "lattice", "ggplot2"), 
-         "fillcolor") <- "gray70"
-
-# clusterData(ragraph, 0, "label") <- "Devices"
-# clusterData(ragraph, 1, "label") <- "Systems"
-# clusterData(ragraph, 2, "label") <- "Graphics-based Packages"
-# clusterData(ragraph, 3, "label") <- "Grid-based Packages"
-Rgraphviz::clusterData(ragraph, 0, "style") <- "dashed"
-
-# Edge from "grDevices" to "Interface Packages" cluster
-# (Needs existing link from grDevices to rgl)
-# edgeDataDefaults(ragraph, "lhead") <- NA
-# edgeData(ragraph, "grDevices", "rgl", "lhead") <- "cluster_1" 
-
-# Edges within "Interface Packages" cluster
-Rgraphviz::edgeData(ragraph, "rgl", "rggobi", "style") <- "invis"
-Rgraphviz::edgeData(ragraph, "rggobi", "iplots", "style") <- "invis"
-Rgraphviz::edgeData(ragraph, "iplots", "rgl", "style") <- "invis"
-# edgeData(ragraph, "pixmap", "rgl", "style") <- "invis"
-# edgeData(ragraph, "gridBase", "rggobi", "style") <- "invis"
-# edgeData(ragraph, "lattice", "iplots", "style") <- "invis"
-
-Rgraphviz::toFile(ragraph, filename="grpkgs.dot", fileType="dot")
-system("dot -Kneato grpkgs.dot -Tps -Gsize='8,8' -Gmargin=0 > organisation-graphicslevels.ps") 
-
-
-
+size <- unit(.5, "in")
+node <- function(text, x, y, fill="grey") {
+    grid.circle(x, y, r=size, gp=gpar(fill=fill), name=text)
+    grid.text(text, x, y)
+}
+edge <- function(from, fangle, to, tangle, ends="last") {
+    grid.segments(grobX(from, fangle), grobY(from, fangle),
+                  grobX(to, tangle), grobY(to, tangle),
+                  arrow=arrow(angle=15, type="closed", ends=ends),
+                  gp=gpar(fill="black"))
+}
+curve <- function(from, fangle, to, tangle, curv, ends="last") {
+    x1 <- convertX(grobX(from, fangle), "in")
+    y1 <- convertY(grobY(from, fangle), "in")
+    x2 <- convertX(grobX(to, tangle), "in")
+    y2 <- convertY(grobY(to, tangle), "in")
+    grid.curve(x1, y1, x2, y2,
+               curvature=curv, ncp=5, square=FALSE,
+               arrow=arrow(angle=15, type="closed", ends=ends),
+               gp=gpar(fill="black"))
+}
+grid.newpage()
+node("grDevices", .5, 3/5)
+node("graphics", .5, 4/5)
+node("grid", .5, 2/5)
+node("lattice", 2/5, 1/5)
+node("ggplot2", 3/5, 1/5)
+node("grImport", 1/5, 3/5, fill="white")
+node("grImport2", 1/5, 1.5/5, fill="white")
+node("gridBase", 3.5/5, 3/5, fill="white")
+node("gridGraphics", 4.5/5, 2.5/5, fill="white")
+node("gridSVG", 4/5, 1.5/5, fill="white")
+edge("grDevices", 90, "graphics", 270)
+edge("grDevices", 270, "grid", 90)
+edge("grid", 240, "lattice", 70)
+edge("grid", 300, "ggplot2", 110)
+edge("grImport2", 20, "grid", 200)
+edge("grid", 340, "gridSVG", 160)
+edge("grImport", 35, "graphics", 215)
+edge("grImport", 325, "grid", 145)
+edge("grid", 45, "gridBase", 225, ends="both")
+edge("graphics", 315, "gridBase", 135, ends="both")
+edge("gridGraphics", 190, "grid", 10)
+curve("graphics", 20, "gridGraphics", 90, -.5)
 
 
 }
@@ -6755,6 +5963,112 @@ for (i in 1:nrow) {
 
 }
 figure10.4 <- function() {
+grid.rect(gp=gpar(col="gray"))
+grid.text("hello", x=1/4)
+grid.text("hello", x=2/4, 
+          gp=gpar(fontfamily="serif"))
+grid.text("hello", x=3/4, 
+          gp=gpar(fontfamily="serif", fontface="bold"))
+
+
+}
+figure10.5 <- function() {
+grid.rect(gp=gpar(col="gray"))
+chars <- sprintf("\\#H%04d", 861:866)
+chars
+grid.text(chars, x=1:6/7, gp=gpar(fontfamily="HersheySans"))
+
+
+}
+figure10.6 <- function() {
+flubber <- Type1Font("flubber", 
+                     rep(system.file("extra", "flubber.afm",
+                                     package="RGraphics"), 4),
+                     encoding="WinAnsi.enc")
+pdfFonts(flubber=flubber)
+pdf("flubber.pdf", width=4.5, height=.5)
+grid.rect(gp=gpar(col="gray"))
+grid.text("hello", gp=gpar(fontfamily="flubber"))
+dev.off()
+embedFonts("flubber.pdf", outfile="flubber-embedded.pdf", 
+           fontpaths=system.file("extra", package="RGraphics"))
+
+
+}
+figure10.7 <- function() {
+cairo_pdf("cairo.pdf", width=4.5, height=.5)
+grid.rect(gp=gpar(col="gray"))
+grid.text("m\U0101ori", gp=gpar(fontfamily="Ubuntu"))
+dev.off()
+
+
+}
+figure10.8 <- function() {
+
+tikzDevice::tikz("params-tikz.tex", width=4.5, height=.5)
+grid.rect(gp=gpar(col="grey"))
+grid.text("hello \\TeX{} $\\sum_{i=1}^n x_i$")
+dev.off()
+
+
+}
+figure10.9 <- function() {
+
+sysfonts::font_add_google("Special Elite", "elite")
+grid.rect(gp=gpar(col="grey"))
+showtext::showtext_begin()
+grid.text("hello", gp=gpar(fontfamily="elite"))
+showtext::showtext_end()
+
+
+}
+figure10.10 <- function() {
+cairo_pdf("cairo-faces.pdf", width=4.5, height=.5)
+grid.rect(gp=gpar(col="grey"))
+grid.text("hello", x=1/5, 
+          gp=gpar(fontfamily="Ubuntu"))
+grid.text("hello", x=2/5, 
+          gp=gpar(fontfamily="Ubuntu", fontface="bold"))
+grid.text("hello", x=3/5, 
+          gp=gpar(fontfamily="Ubuntu", fontface="italic"))
+grid.text("hello", x=4/5, 
+          gp=gpar(fontfamily="Ubuntu Condensed"))
+dev.off()
+
+
+}
+figure10.11 <- function() {
+# placeholder
+
+
+}
+figure10.12 <- function() {
+pdfFonts(CM=Type1Font("CM",
+                      system.file("extra", 
+                                  c("cmr10.afm",
+                                    "cmbx10.afm",
+                                    "cmsl10.afm",
+                                    "cmbxsl10.afm",
+                                    "cmsyase.afm"),
+                                  package="RGraphics"),
+           # Had to use special encoding file to force
+           # char94 to be named "circumflex" not "asciicircum"
+           # (bug in encoding loading in devPS.c ?)
+                       encoding=system.file("extra", "myenc.enc",
+                                            package="RGraphics")))
+# Just for the temperature expression
+# use default symbol font for the degree symbol
+pdfFonts(CM2=Type1Font("CM2",
+           system.file("extra",
+                       c("cmr10.afm",
+                         "cmbx10.afm",
+                         "cmsl10.afm",
+                         "cmbxsl10.afm",
+                         "s050000l.afm"),
+                       package="RGraphics")))
+
+
+
 h <- 0.01
 drawexpr <- function(expr, y, exprFamily="CM") {
   grid.text(paste("expression(", expr, ")", sep=""), .5, y-h, 
@@ -6772,19 +6086,34 @@ grid.rect(gp=gpar(col="gray", fill=NA))
 
 
 }
+figure10.13 <- function() {
+grid.rect(gp=gpar(col="gray"))
+grid.text(expression("We can make text "*
+                     italic("emphasized")*
+                     " or "*
+                     bold("strong")))
+
+
+}
 figure2.1 <- function() {
+plot(pressure)
+plot(pressure$temperature, pressure$pressure)
+plot(pressure ~ temperature, data=pressure)
+
+
+}
+figure2.2 <- function() {
 par(mfrow=c(2, 2), cex=0.6, mar=c(4, 4, 1, 1))
-y <- rnorm(20)
-plot(y, type="p")
-plot(y, type="l")
-plot(y, type="b")
-plot(y, type="h")
+plot(pressure, type="p")
+plot(pressure, type="l")
+plot(pressure, type="b")
+plot(pressure, type="h")
 
 
 
 
 }
-figure2.2 <- function() {
+figure2.3 <- function() {
   par(mfrow=c(2, 2), cex=0.6, mar=c(4, 4, 4, 2), mex=0.8)
   plot(lm.SR <- lm(sr ~ pop15 + pop75 + dpi + ddpi, data = LifeCycleSavings),
        id.n=1, cex.caption=0.8, which=1:4,
@@ -6793,7 +6122,7 @@ figure2.2 <- function() {
 
 
 }
-figure2.3 <- function() {
+figure2.4 <- function() {
 
 
 
@@ -6812,7 +6141,7 @@ plot(ai, which=2, labels = cS)
 
 
 }
-figure2.4 <- function() {
+figure2.5 <- function() {
 plottitle <- function(plotfun, funarg, outer=FALSE, cex=.7, line=1) {
     ncp <- nchar(plotfun)
     nca <- nchar(funarg)
@@ -6883,7 +6212,7 @@ dohplot("barplot", table(rep(1:3, 1:3)), funarg="",
 dohplot("pie", c(1, 2, 4), funarg="", col=gray(1:3/4), cex=.7,
         labels="", axes=NULL)
 dohplot("dotchart", 1:3, 
-        funarg="numeric", pch=21, bg="gray",  
+        funarg="numeric", pch=21, bg="gray", axes=NULL,
         lcolor="black", xlim=c(0, 4))
 # Empty
 plot.new()
@@ -6893,6 +6222,7 @@ dohplot("hist", (1:100)^2, funarg="", col="gray",
         breaks=6,
         xlim=c(-1000, 11000), ylim=c(0, 50))
 dohplot("stripchart", (1:10)^2, funarg="numeric", 
+        extrafn="plot", extraarg="~x",
         method="stack",
         cex=1, xlim=c(-10, 110), ylim=c(-1, 3), pch=21, bg="gray")
 # stem()
@@ -6905,7 +6235,7 @@ plottitle("stem", "")
 
 
 }
-figure2.5 <- function() {
+figure2.6 <- function() {
 plottitle <- function(plotfun, funarg, outer=FALSE, cex=.7, line=1) {
     ncp <- nchar(plotfun)
     nca <- nchar(funarg)
@@ -6999,8 +6329,8 @@ dohplot("spineplot",
         funarg="num,fac", box=FALSE)
 dohplot("cdplot", 
         rep(1:3, each=6), 
-        factor(c(rep(1:3, 3:1), rep(1:3, 2), rep(1:3, 1:3))),
-        funarg="", box=FALSE)
+        factor(c(rep(1:3, 3:1), rep(1:3, 2), rep(1:3, 1:3))), 
+        funarg="", axes=NULL, box=FALSE)
 # Empty gap 
 plot.new()
 dohplot("spineplot", 
@@ -7025,21 +6355,21 @@ dohplot("fourfoldplot",
 dohplot("mosaicplot", 
         table(factor(rep(1:3, each=6)), 
               factor(c(rep(1:3, 3:1), rep(1:3, 2), rep(1:3, 1:3)))),
-        funarg="", off=10,
-        extrafn="plot", extraarg="table",
-        cex.axis=.1, box=FALSE)
+        funarg="", off=10, 
+        extrafn="plot", extraarg="table", 
+        cex.axis=.1, axes=NULL, box=FALSE)
 # Put dotchart in gap
 par(fig=c(fig[1] - .1, fig[2:4]), new=TRUE)
 dotdata <- rbind(1:3, (1:3)^2) # rbind(table(gy), table(gx))
-colnames(dotdata) <- rep("", 3)
+colnames(dotdata) <- c(" ", "  ", "   ")
 dohplot("dotchart", dotdata, funarg="matrix",
         labels="", pch=c(16, 21), bg="gray",
-        lcolor="black", xlim=c(0, 13), box=FALSE)
+        lcolor="black", xlim=c(0, 13), box=FALSE, gcolor=NA, axes=NULL)
 
 
 
 }
-figure2.6 <- function() {
+figure2.7 <- function() {
 plottitle <- function(plotfun, funarg, outer=FALSE, cex=.7, line=1) {
     ncp <- nchar(plotfun)
     nca <- nchar(funarg)
@@ -7129,13 +6459,13 @@ plot.new()
 dohplot("mosaicplot", 
         table(factor(rep(1:3, each=6)), 
               factor(c(rep(1:3, 3:1), rep(1:3, 2), rep(1:3, 1:3)))),
-        funarg="", cex.axis=.1, off=10,
+        funarg="", cex.axis=.1, off=10, axes=NULL,
         box=FALSE)
 
 
 
 }
-figure2.7 <- function() {
+figure2.8 <- function() {
 par(mfrow=c(2, 2), mar=c(2.5, 2, 1, 1), cex=0.6)
 boxplot(decrease ~ treatment, data = OrchardSprays,
         log = "y", col="light gray")
@@ -7156,7 +6486,7 @@ barplot(VADeaths[1:2,], angle = c(45, 135),
 
 
 }
-figure2.8 <- function() {
+figure2.9 <- function() {
 par(mfrow=c(2, 2), mar=c(2, 2, 1, 1), cex=0.6)
 y <- rnorm(20)
 plot(y, type="l", lwd=3)
@@ -7168,7 +6498,7 @@ plot(y, type="l", ylim=c(-4, 4))
 
 
 }
-figure2.9 <- function() {
+figure2.10 <- function() {
 par(cex=.5)
 plot(function(x) { 
          sin(x)/x 
@@ -7236,7 +6566,7 @@ g <- factor(1:5)
 types <- c("barchart", "bwplot", "densityplot", "dotplot",
            "histogram", "qqmath", "stripplot", "qq",
            "xyplot", "levelplot", "contourplot",
-           "cloud", "wireframe", "splom", "parallel")
+           "cloud", "wireframe", "splom", "parallelplot")
 angle <- seq(0, 2*pi, length=19)[-19]
 xx <- cos(angle)
 yy <- sin(angle)
@@ -7275,7 +6605,7 @@ plot[[13]] <- doplot("wireframe", zzz ~ xxx + yyy | 1, zlab=NULL, zoom=0.9,
                      colorkey=FALSE)
 plot[[14]] <- doplot("splom", ~ data.frame(x=xx[1:10], y=yy[1:10]) | 1, 
                      pscales=0)
-plot[[15]] <- doplot("parallel", ~ as.data.frame(split(yy, gg)) | 1)
+plot[[15]] <- doplot("parallelplot", ~ as.data.frame(split(yy, gg)) | 1)
 
 grid.newpage()
 pushViewport(viewport(layout=grid.layout(4, 4)))
@@ -7370,7 +6700,7 @@ xyplot(mpg ~ disp | factor(gear), data=mtcars,
        layout=c(3, 1), aspect=1,
        scales=list(y=list(at=seq(10, 30, 10))),
        ylab="miles per gallon",
-       xlab=expression(paste("displacement (", inch^3, ")")))
+       xlab=expression(paste("displacement (in"^3, ")")))
 
 )
 
@@ -7418,1004 +6748,6 @@ figure4.12 <- function() {
 
 trellis.par.set(list(fontsize=list(text=9, points=8)))
 show.settings()
-
-
-
-}
-figure4.13 <- function() {
-doplot <- function(name, ...) {
-  do.call(name, 
-          list(..., scales=list(draw=FALSE), xlab=NULL, ylab="",
-               strip=function(which.panel, ...) { 
-                       grid.rect(gp=gpar(fill="gray90")); grid.text(name) 
-                     }))
-}
-
-plot <- vector("list", 4)
-plot[[1]] <- doplot("ecdfplot", ~ rnorm(10) | 1)
-plot[[2]] <- doplot("rootogram", ~ rpois(50, 10) | 1, 
-                    dfun=function(x) dpois(x, 10))
-plot[[3]] <- doplot("segplot", factor(1:5) ~ rnorm(5) + rnorm(5) | 1)
-plot[[4]] <- doplot("tileplot", 
-                    1:10 ~ rnorm(10) + rnorm(10) | 1,
-                    colorkey=FALSE, aspect="fill")
-
-
-grid.newpage()
-pushViewport(viewport(layout=grid.layout(1, 4)))
-for (i in 1:4) {
-  pushViewport(viewport(layout.pos.col=i,
-                        layout.pos.row=1))
-  print(plot[[i]], newpage=FALSE, 
-        panel.width=list(1.025, "inches"),
-        panel.height=list(1.025, "inches"))
-  popViewport()
-}
-popViewport()
-
-
-
-}
-figure12.1 <- function() {
-TitanicDF <- as.data.frame(Titanic)
-TitanicList <- lapply(TitanicDF[1:4], rep, TitanicDF$Freq)
-TitanicSets <- 
-    data.frame(passenger=TitanicList$Class != "Crew",
-               adult=TitanicList$Age == "Adult",
-               male=TitanicList$Sex == "Male",
-               survivor=TitanicList$Survived == "Yes")
-head(TitanicSets)
-
-
-
-
-
-
-
-
-
-
-
-gplots::venn(TitanicSets[1:2])
-
-
-
-par(mar=rep(2, 4))
-plot(venneuler::venneuler(TitanicSets[1:2]), 
-     col=hcl(0, 0, c(60, 80), .5),
-     alpha=NA, border="black")
-
-
-
-
-gplots::venn(TitanicSets[1:3])
-
-
-
-par(mar=rep(2, 4))
-plot(venneuler::venneuler(TitanicSets[1:3]), 
-     col=hcl(0, 0, seq(40, 80, 20), .5),
-     alpha=NA, border="black")
-
-
-
-
-pdf("Figures/special-venn-3-%d.pdf", onefile=FALSE,
-    width=6, height=6)
-gplots::venn(TitanicSets)
-
-dev.off()
-png("Figures/special-venn-3-%d.png", width=240, height=240, pointsize=8)
-gplots::venn(TitanicSets)
-
-dev.off()
-
-
-par(mar=rep(2, 4))
-plot(venneuler::venneuler(TitanicSets[1:4]), 
-     col=hcl(0, 0, seq(20, 80, 20), .5),
-     alpha=NA, border="black")
-
-
-
-
-}
-figure12.2 <- function() {
-
-
-
-
-
-
-
-
-TeachingDemos::faces(USJudgeRatings[1:5, ], nrow=1, ncol=5)
-
-
-
-TeachingDemos::faces2(USJudgeRatings[1:5, ], nrows=1, ncols=5, scale="all")
-
-
-
-symbols::symbol(USJudgeRatings[1:25, ], type="face")
-
-
-
-}
-figure12.3 <- function() {
-
-data("soil", envir=environment())
-place2region <- as.data.frame(rbind(c("Cnt1", "Lima"),
-                                    c("Cnt2", "Lima"),
-                                    c("Cnt3", "Lima"),
-                                    c("Chz", "Ancash"),
-                                    c("Chmar", "Huanuco"),
-                                    c("Hco1", "Huanuco"),
-                                    c("Hco2", "Huanuco"),
-                                    c("Hco3", "Huanuco"),
-                                    c("Hyo1", "Junin"),
-                                    c("Hyo2", "Junin"),
-                                    c("Namora", "Cajamarca"),
-                                    c("SR1", "Junin"),
-                                    c("SR2", "Junin")))
-soils <- merge(soil, place2region,
-               by.x="place", by.y="V1")[c("sand", "slime", "clay")]
-names(soils) <- c("sand", "silt", "clay")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-vcd::ternaryplot(soils, col="black", 
-            grid_color="black", labels_color="black")
- 
-
-
-
-plotrix::triax.plot(soils,  cex.ticks=.5)
-
-
-
-TTsoils <- soils
-names(TTsoils) <- c("SAND", "SILT", "CLAY")
-soiltexture::TT.plot(tri.data=TTsoils)
-
-
-
-}
-figure12.4 <- function() {
-hourSpeed <- aggregate(RGraphics::hourlySpeed["Speed"], 
-                       list(hour=RGraphics::hourlySpeed$hour),
-                       mean)
-head(hourSpeed)
-
-
-
-
-
-
-
-
-
-
-
-trellis.par.set(theme = canonical.theme("postscript", color=FALSE))
-print(
-with(RGraphics::wind9am,
-     polarFreq(data.frame(ws=Speed, wd=Dir, date=Date),
-               cols=gray(10:1/11), border.col="black"))
-
-      )
-
-
-
-plotrix::polar.plot(hourSpeed$Speed, hourSpeed$hour * 15,
-           start=90, clockwise=TRUE, lwd=5,
-           label.pos=seq(15, 360, 15), labels=1:24,
-           radial.lim=c(0, 4.5))
-
-
-}
-figure12.5 <- function() {
- 
-
-
-
-station22254dir <- with(RGraphics::wind9am, Dir[Station == 22254])
-
-
-
-station22254 <- circular::circular(station22254dir, 
-                         units="degrees",
-                         zero=pi/2, rotation="clock")
-
-
-
-windHours <- circular::circular(RGraphics::hourlySpeed$hour,
-                      units="hours", 
-                      zero=pi/2, rotation="clock")
-
-
-
-par(mar=rep(2, 4), xpd=NA)
-plot(station22254, stack=TRUE, sep=.06)
-
-
-
-
-par(mar=rep(2, 4), xpd=NA)
-plot(density(station22254, bw=45), 
-     main="", xlab="", ylab="")
-
-
-
-
-par(mar=rep(1, 4), xpd=NA)
-circular::rose.diag(station22254, bins=36, prop=3)
-
-
-
-
-par(mar=rep(1, 4), xpd=NA)
-plot(windHours, col=NA, shrink=1.2, axes=FALSE)
-lines(windHours, 
-      0.5*RGraphics::hourlySpeed$Speed/max(RGraphics::hourlySpeed$Speed),
-      nosort=TRUE, lty="dotted", join=FALSE)
-circular::axis.circular(template="clock24")
-
-
-
-
-}
-figure12.6 <- function() {
-
-
-
-
-
-print(
-with(RGraphics::wind9am,
-     windRose(data.frame(ws=Speed, wd=Dir, 
-                         date=Date, station=factor(Station)),
-
-              paddle=FALSE, type="station", width=2))
-)
-
-
-}
-figure12.7 <- function() {
-
-
-
-
-data("NHANES", envir=environment())
-plot(Serum.Iron ~ Transferin, NHANES)
-
-
-
-trellis.par.set(theme = canonical.theme("postscript", color=FALSE))
-print(
-hexbin::hexbinplot(Serum.Iron ~ Transferin, NHANES)
-
-)
-
-
-
-trellis.par.set(theme = canonical.theme("postscript", color=FALSE))
-print(
-hexbin::hexbinplot(Serum.Iron ~ Transferin | Sex, NHANES)
-
-)
-
-
-
-}
-figure16.1 <- function() {
-
-tetra <- function() {
-t1 <- rgl::tetrahedron3d()
-t2vb <- t1$vb
-t2vb[1, ] <- -3
-t2 <- rgl::tmesh3d(t2vb, t1$it)
-plane <- rgl::qmesh3d(rbind(rep(-3.01, 4),
-                       c(-2, -2, 2, 2),
-                       c(-3, 3, 3, -3),
-                       rep(1, 4)),
-                 matrix(1:4, ncol=1))
-rgl::open3d(windowRect=c(0, 0, 600, 600))
-# clear3d()
-rgl::shade3d(plane, color="white", specular="black")
-rgl::wire3d(plane)
-rgl::wire3d(t1, lwd=3)
-rgl::wire3d(t2, lwd=3)
-rgl::segments3d(rbind(t2$vb[1, t2$it], 
-                 t1$vb[1, t1$it]),
-           rbind(t2$vb[2, t2$it], 
-                 t1$vb[2, t1$it]),
-           rbind(t2$vb[3, t2$it], 
-                 t1$vb[3, t1$it]),
-           col="gray", lwd=3)
-rgl::view3d(40, -30)
-}
-
-
-t1 <- rgl::cube3d()
-t1tube <- t1
-t1tube$ib <- t1tube$ib[, -(3:4)]
-t2vb <- t1$vb
-t2vb[1, ] <- -5
-t2 <- rgl::qmesh3d(t2vb, t1$ib)
-plane <- rgl::qmesh3d(rbind(rep(-5.01, 4),
-                       c(-2, -2, 2, 2),
-                       c(-3, 3, 3, -3),
-                       rep(1, 4)),
-                 matrix(1:4, ncol=1))
-rgl::open3d(windowRect=c(0, 0, 600, 600))
-# clear3d()
-rgl::shade3d(plane, color="white", 
-        ambient="white", specular="white", emission="white")
-rgl::wire3d(plane)
-rgl::shade3d(t1tube, color="white", specular="black")
-rgl::wire3d(t1, lwd=3)
-rgl::wire3d(t2, lwd=3)
-rgl::segments3d(rbind(t2$vb[1, t2$ib[, 4]], 
-                 t1$vb[1, t1$ib[, 4]]),
-           rbind(t2$vb[2, t2$ib[, 4]], 
-                 t1$vb[2, t1$ib[, 4]]),
-           rbind(t2$vb[3, t2$ib[, 4]], 
-                 t1$vb[3, t1$ib[, 4]]),
-           col="gray", lwd=3)
-rgl::view3d(55, -20, fov=0)
-rgl::rgl.postscript("Figures/threed-3dproj.eps")
-system("epstopdf Figures/threed-3dproj.eps")
-system("convert Figures/threed-3dproj.pdf Web/threed-3dproj.png")
-
-
-
-}
-figure16.2 <- function() {
-
-tetra <- function() {
-t2vb <- t1$vb
-t2vb[1, ] <- -3
-t2vb[2, c(1, 4)] <- t2vb[2, c(1, 4)]*.8
-t2vb[3, c(1, 4)] <- t2vb[3, c(1, 4)]*.8
-t2vb[2, 2:3] <- t2vb[2, 2:3]*.6
-t2vb[3, 2:3] <- t2vb[3, 2:3]*.6
-t2 <- rgl::tmesh3d(t2vb, t1$it)
-t3vb <- t1$vb
-t3vb[1, ] <- -10
-t3vb[2, ] <- 0
-t3vb[3, ] <- 0
-t3 <- rgl::tmesh3d(t3vb, t1$it)
-rgl::open3d(windowRect=c(0, 0, 600, 600))
-# clear3d()
-rgl::shade3d(plane, color="white", specular="black")
-rgl::wire3d(plane)
-rgl::wire3d(t1, lwd=3)
-rgl::wire3d(t2, lwd=3)
-rgl::segments3d(rbind(t3$vb[1, t3$it], 
-                 t1$vb[1, t1$it]),
-           rbind(t3$vb[2, t3$it], 
-                 t1$vb[2, t1$it]),
-           rbind(t3$vb[3, t3$it], 
-                 t1$vb[3, t1$it]),
-           col="gray", lwd=3)
-rgl::shade3d(rgl::translate3d(rgl::scale3d(rgl::cube3d(), .1, .1, .1), -10, 0, 0))
-rgl::view3d(50, -20, zoom=.8)
-}
-
-t1 <- rgl::cube3d()
-t1tube <- t1
-t1tube$ib <- t1tube$ib[, -(3:4)]
-t2vb <- t1$vb
-t2vb[2, t1$ib[, 4]] <- t2vb[2, t1$ib[, 4]]*.4
-t2vb[3, t1$ib[, 4]] <- t2vb[3, t1$ib[, 4]]*.4
-t2vb[2, t1$ib[, 3]] <- t2vb[2, t1$ib[, 3]]*.6
-t2vb[3, t1$ib[, 3]] <- t2vb[3, t1$ib[, 3]]*.6
-t2vb[1, ] <- -4.5
-t2 <- rgl::qmesh3d(t2vb, t1$ib)
-t2tube <- t2
-t2tube$ib <- t2tube$ib[, -(3:4)]
-t3 <- rgl::translate3d(rgl::scale3d(rgl::cube3d(), .1, .1, .1), -10, 0, 0)
-plane <- rgl::qmesh3d(rbind(rep(-4.51, 4),
-                       c(-2, -2, 2, 2),
-                       c(-3, 3, 3, -3),
-                       rep(1, 4)),
-                 matrix(1:4, ncol=1))
-rgl::open3d(windowRect=c(0, 0, 600, 300))
-# clear3d()
-rgl::shade3d(plane, color="white", 
-        ambient="white", specular="white", emission="white")
-rgl::wire3d(plane)
-rgl::shade3d(t1tube, color="white", specular="black")
-rgl::wire3d(t1, lwd=3)
-rgl::shade3d(t2tube, color="white", specular="black")
-rgl::wire3d(t2, lwd=3)
-rgl::segments3d(rbind(-10, 
-                 t1$vb[1, t1$ib[, 4]]),
-           rbind(0, 
-                 t1$vb[2, t1$ib[, 4]]),
-           rbind(0,
-                 t1$vb[3, t1$ib[, 4]]),
-           col="gray", lwd=3)
-rgl::shade3d(t3)
-rgl::view3d(50, -15, fov=0, zoom=.7)
-rgl::rgl.postscript("Figures/threed-3dvp.eps")
-system("epstopdf Figures/threed-3dvp.eps")
-system("convert Figures/threed-3dvp.pdf Web/threed-3dvp.png")
-
-
-
-}
-figure16.3 <- function() {
-quakes <- read.csv("Quake/earthquakes.csv")
-NZquakes <- quakes[c("LAT", "LONG", "MAG", "DEPTH")]
-
-
-
-cantyQuakes <- quakes[quakes$LAT < -42.4 & quakes$LAT > -44 & 
-               quakes$LONG > 171 & quakes$LONG < 173.5, ]
-
-quakeDens <- MASS::kde2d(cantyQuakes$LONG, cantyQuakes$LAT, n=30)
-
-
-
-par(mar=rep(0, 4))
-persp(quakeDens)
-
-
-
-
-}
-figure16.4 <- function() {
-quakes <- read.csv("Quake/earthquakes.csv")
-NZquakes <- quakes[c("LAT", "LONG", "MAG", "DEPTH")]
-
-
-
-cantyQuakes <- quakes[quakes$LAT < -42.4 & quakes$LAT > -44 & 
-               quakes$LONG > 171 & quakes$LONG < 173.5, ]
-
-quakeDens <- MASS::kde2d(cantyQuakes$LONG, cantyQuakes$LAT, n=30)
-
-
-
-par(mar=rep(0, 4))
-persp(quakeDens, scale=FALSE, expand=0.02,
-      theta=60, d=.1, r=.1,
-      xlab="longitude", ylab="latitude", zlab="")
-
-
-
-
-}
-figure16.5 <- function() {
-quakes <- read.csv("Quake/earthquakes.csv")
-NZquakes <- quakes[c("LAT", "LONG", "MAG", "DEPTH")]
-
-
-
-cantyQuakes <- quakes[quakes$LAT < -42.4 & quakes$LAT > -44 & 
-               quakes$LONG > 171 & quakes$LONG < 173.5, ]
-
-quakeDens <- MASS::kde2d(cantyQuakes$LONG, cantyQuakes$LAT, n=30)
-
-
-
-par(mar=rep(0, 4))
-zinterp <- with(quakeDens,
-                z[-1, -1] + z[-1, -ncol(z)] + 
-                z[-nrow(z), -1] + z[-nrow(z), -ncol(z)])
-persp(quakeDens, scale=FALSE, expand=0.02,
-      theta=60, d=.1, r=.1, axes=FALSE, box=FALSE,
-      col=gray(.4 + 1:6/10)[cut(zinterp, 6)])
-
-
-
-
-}
-figure16.6 <- function() {
-quakes <- read.csv("Quake/earthquakes.csv")
-NZquakes <- quakes[c("LAT", "LONG", "MAG", "DEPTH")]
-
-
-
-cantyQuakes <- quakes[quakes$LAT < -42.4 & quakes$LAT > -44 & 
-               quakes$LONG > 171 & quakes$LONG < 173.5, ]
-
-quakeDens <- MASS::kde2d(cantyQuakes$LONG, cantyQuakes$LAT, n=30)
-
-
-
-shallowCantyQuakes <- subset(cantyQuakes, DEPTH < 20)
-
-
-
-trellis.device("pdf", color=FALSE,
-               file="Figures/threed-cloud%d.pdf", onefile=FALSE)
-for (i in seq(40, 80, 20)) {
-    print(cloud(-DEPTH ~ LONG + LAT, shallowCantyQuakes,
-                xlim=c(171, 173), ylim=c(-44.5, -42.5),
-                pch=16, col=rgb(0, 0, 0, .5),
-                screen=list(z=i, x=-70)))
-}
-
-dev.off()
-
-
-
-}
-figure16.7 <- function() {
-quakes <- read.csv("Quake/earthquakes.csv")
-NZquakes <- quakes[c("LAT", "LONG", "MAG", "DEPTH")]
-
-
-
-cantyQuakes <- quakes[quakes$LAT < -42.4 & quakes$LAT > -44 & 
-               quakes$LONG > 171 & quakes$LONG < 173.5, ]
-
-quakeDens <- MASS::kde2d(cantyQuakes$LONG, cantyQuakes$LAT, n=30)
-
-
-
-shallowCantyQuakes <- subset(cantyQuakes, DEPTH < 20)
-
-
-
-
-
-
-
-par(lab=c(3, 3, 0))
-s3d <- with(shallowCantyQuakes,
-            scatterplot3d(-DEPTH ~ LONG + LAT,
-                          angle=30, scale.y=0.45, type="n",
-                          pch=16, color=rgb(0, 0, 0, .5),
-                          x.ticklabs=pretty(LONG, 3),
-                          grid=FALSE, zlim=c(-20, 0)))
-
-quakeDensXY <- MASS::kde2d(shallowCantyQuakes$LONG, 
-                     shallowCantyQuakes$LAT, n=30)
-lapply(contourLines(quakeDensXY, nlevels=8),
-       function(cl) {
-           polygon(s3d$xyz.convert(cl$x, cl$y, 
-                                   rep(-20, length(cl$x))),
-                   lwd=.5, col=gray(.8 - cl$level/20),
-                   border=NA)
-       })
-
-quakeDensXZ <- MASS::kde2d(shallowCantyQuakes$LONG, 
-                     -shallowCantyQuakes$DEPTH, n=30)
-lapply(contourLines(quakeDensXZ, nlevels=8),
-       function(cl) {
-           polygon(s3d$xyz.convert(cl$x, 
-                                   rep(-43.2, length(cl$x)),
-                                   cl$y),
-                   lwd=.5, col=gray(.8 - 2*cl$level),
-                   border=NA)
-       })
-quakeDensYZ <- MASS::kde2d(shallowCantyQuakes$LAT, 
-                     -shallowCantyQuakes$DEPTH, n=30)
-lapply(contourLines(quakeDensYZ, nlevels=8),
-       function(cl) {
-           polygon(s3d$xyz.convert(rep(171.5, length(cl$x)),
-                                 cl$x, cl$y),
-                   lwd=.5, col=gray(.8 - cl$level),
-                   border=NA)
-       })
-lapply(contourLines(quakeDensYZ, nlevels=8),
-       function(cl) {
-           polygon(s3d$xyz.convert(rep(173.5, length(cl$x)),
-                                   cl$x, cl$y),
-                   lwd=.5, col=gray(.8 - cl$level),
-                   border=NA)
-       })
-
-with(shallowCantyQuakes,
-     s3d$points3d(-DEPTH ~ LONG + LAT, pch=16,
-                  col=rgb(0, 0, 0, .3)))
-
-s3d$box()
-
-
-
-}
-figure16.8 <- function() {
-
-
-
-
-quakes <- read.csv("Quake/earthquakes.csv")
-NZquakes <- quakes[c("LAT", "LONG", "MAG", "DEPTH")]
-
-
-
-cantyQuakes <- quakes[quakes$LAT < -42.4 & quakes$LAT > -44 & 
-               quakes$LONG > 171 & quakes$LONG < 173.5, ]
-
-quakeDens <- MASS::kde2d(cantyQuakes$LONG, cantyQuakes$LAT, n=30)
-
-
-
-rgl::open3d(windowRect=c(0, 0, 900, 450))
-# clear3d("all")
-rgl::persp3d(quakeDens$x, quakeDens$y, quakeDens$z, 
-        aspect=c(1, 0.55, .2), col="white", box=FALSE,
-        axes=FALSE, xlab="", ylab="", zlab="")
-
-rgl::par3d(userMatrix=rgl::rotationMatrix(-80/180*pi, 1, 0, 0)%*%
-                 rgl::rotationMatrix(-65/180*pi, 0, 0, 1),
-      zoom=.5)
-rgl::snapshot3d("Figures/threed-rglpersp.png")
-system("cp Figures/threed-rglpersp.png Web/")
-
-
-
-}
-figure16.9 <- function() {
-
-
-
-
-
-
-
-
-quakes <- read.csv("Quake/earthquakes.csv")
-NZquakes <- quakes[c("LAT", "LONG", "MAG", "DEPTH")]
-
-
-
-cantyQuakes <- quakes[quakes$LAT < -42.4 & quakes$LAT > -44 & 
-               quakes$LONG > 171 & quakes$LONG < 173.5, ]
-
-quakeDens <- MASS::kde2d(cantyQuakes$LONG, cantyQuakes$LAT, n=30)
-
-
-
-shallowCantyQuakes <- subset(cantyQuakes, DEPTH < 20)
-
-
-
-d <- with(shallowCantyQuakes, 
-          {
-              misc3d::kde3d(LONG, LAT, -DEPTH, 
-                    h=c(.1, .1, 2), n = 30)
-          })
-
-
-
-rgl::open3d(windowRect=c(0, 0, 900, 900))
-with(shallowCantyQuakes, 
-     {
-         rgl::plot3d(LONG, LAT, -DEPTH, 
-                aspect=c(1, 0.55, 1), 
-                axes=TRUE, box=FALSE,
-                xlab="", ylab="", zlab="")
-         misc3d::contour3d(d$d, c(.4, .1), d$x, d$y, d$z,
-                   color=rep("gray80", 2), 
-                   color2="gray", specular="black",
-                   engine="rgl", add=TRUE, alpha=.5)
-     })
-
-rgl::par3d(userMatrix=rgl::rotationMatrix(-60/180*pi, 1, 0, 0)%*%
-                 rgl::rotationMatrix(-40/180*pi, 0, 0, 1),
-      zoom=.9)
-rgl::snapshot3d("Figures/contour3d.png")
-system("cp Figures/contour3d.png Web/threed-contour3d.png")
-
-
-}
-figure16.10 <- function() {
-
-
-
-
-rgl::open3d(windowRect=c(0, 0, 600, 600))
-rgl::clear3d("all")
-rgl::light3d()
-rgl::material3d(shininess=100, specular="black")
-# Head
-radius <- function(d) {
-   pchisq(d^2, 3)
-}
-rgl::shade3d(rgl::ellipse3d(diag(3), level=radius(1),
-                   centre=c(0, 0, 1)),
-         color="yellow")
-# Neck
-# logo is 100x76
-png("rlogoExtended.png",
-    width=500, height=250)
-grid.rect(gp=gpar(col=NA, fill="yellow"))
-
-rlogo <- as.raster(png::readPNG(system.file("extra", "Rlogo.png", 
-                                       package="RGraphics")))
-rlogo[rlogo == "#FFFFFF"] <- "yellow"
-grid.raster(rlogo, x=.6, y=.01, width=.08, just=c("bottom"))
-dev.off()
-rgl::shade3d(rgl::cylinder3d(cbind(0, 0, c(-1.4, 1)),
-                   e1=cbind(0, 0, 1),
-                   e2=cbind(1, 0, 0),
-                   sides=100),
-        color="yellow",
-        texture="rlogoExtended.png",
-        texcoords=list(x=rep(seq(1, 0, length.out=101), each=4)[-c(1:2, 403:404)],
-                       y=rep(c(0, 1, 1, 0), 50)))
-old <- function() {
-rgl::shade3d(rgl::cylinder3d(cbind(0, 0, c(-1.3, 1)),
-                   e1=cbind(0, 0, 1),
-                   e2=cbind(1, 0, 0),
-                   sides=100),
-        color="yellow")
-}
-# Eyes
-eyeball <- rgl::ellipse3d(diag(3), level=radius(.4))
-rgl::shade3d(rgl::translate3d(eyeball, .8, .35, .7),
-         color="white")
-rgl::shade3d(rgl::translate3d(eyeball, .8, -.35, .7),
-         color="white")
-# Translate radius of eye, rotate, translate position of eye
-pupil <- rgl::rotate3d(rgl::translate3d(rgl::ellipse3d(diag(3),
-                                        level=radius(.05)),
-                              .4, 0, 0),
-                  30/180*pi, 0, 0, 1)
-rgl::shade3d(rgl::translate3d(pupil, .8, .35, .7),
-         color="black")
-rgl::shade3d(rgl::translate3d(pupil, .8, -.35, .7),
-         color="black")
-# points3d(1.21, c(-.35, .35), .7, cex=3)
-# Nose
-rgl::shade3d(rgl::cylinder3d(cbind(c(1, 1.3), 0, .3),
-                    radius=.2,
-                    e1=cbind(1, 0, 0),
-                    e2=cbind(0, 1, 0),
-                    sides=100),
-         color="yellow")
-rgl::shade3d(rgl::ellipse3d(diag(3), level=radius(.2),
-                   centre=c(1.3, 0, .3)),
-         color="yellow")
-# Mouth
-rgl::shade3d(rgl::ellipse3d(diag(3), level=radius(.8),
-                   centre=c(.6, 0, -.5)),
-         color="tan")
-angle <- seq(-65, 65, length=30)/180*pi
-rgl::lines3d(.6 + .81*cos(angle), .81*sin(angle), -.5, lwd=3)
-# Hair on top
-angle <- seq(15, 165, length=30)/180*pi
-rgl::lines3d(.2, .7*cos(angle), 1.5 + .7*sin(angle), lwd=3)
-rgl::lines3d(-.2, .7*cos(angle), 1.5 + .7*sin(angle), lwd=3)
-# Hair on sides
-rgl::lines3d(seq(.5, -.5, length=5), -1, rep(c(.3, .8), length=5), lwd=3)
-rgl::lines3d(seq(.5, -.5, length=5), 1, rep(c(.3, .8), length=5), lwd=3)
-
-rgl::par3d(userMatrix=rgl::rotationMatrix(-pi/2, 1, 0, 0)%*%
-      rgl::rotationMatrix(-50/180*pi, 0, 0, 1)%*%
-      rgl::rotationMatrix(10/180*pi, 1, 0, 0))
-
-rgl::snapshot3d("homer.png")
-
-
-
-}
-figure16.11 <- function() {
-
-
-
-
-quakes <- read.csv("Quake/earthquakes.csv")
-NZquakes <- quakes[c("LAT", "LONG", "MAG", "DEPTH")]
-
-
-
-cantyQuakes <- quakes[quakes$LAT < -42.4 & quakes$LAT > -44 & 
-               quakes$LONG > 171 & quakes$LONG < 173.5, ]
-
-quakeDens <- MASS::kde2d(cantyQuakes$LONG, cantyQuakes$LAT, n=30)
-
-
-
-shallowCantyQuakes <- subset(cantyQuakes, DEPTH < 20)
-
-
-
-with(shallowCantyQuakes,
-     vrmlgen::cloud3d(LONG, LAT, -DEPTH,
-             filename="vrmlgen.wrl",
-             cols="white"))
-
-
-
-
-}
-figure13.1 <- function() {
-xmm <- read.table(file.path("XMM-Newton", "XMM-Newton.txt"),
-                  header=TRUE)
-
-
-
-counts <- sort(table(RGraphics::xmm$Category))
-
-par(mfrow=c(1, 2), mar=c(3, 3, 2, 2))
-
-barplot(counts)
-dotchart(counts)
-
-
-
-
-print(barchart(counts), pos=c(0, 0, .5, 1),
-      more=TRUE)
-print(dotplot(counts), pos=c(.5, 0, 1, 1))
-
-
-
-grid.newpage()
-catSort <- data.frame(Category=factor(RGraphics::xmm$Category, levels=names(counts)))
-pushViewport(viewport(x=0, width=.5, just="left"))
-print(ggplot(catSort) +
-      geom_bar(aes(x=Category)), newpage=FALSE)
-popViewport()
-pushViewport(viewport(x=1, width=.5, just="right"))
-catCounts <- data.frame(Category=factor(names(counts), levels=names(counts)),
-                        Count=counts)
-print(ggplot(catCounts) +
-      geom_point(aes(y=Category, x=Count)),
-      newpage=FALSE)
-popViewport()
-
-
-
-
-}
-figure13.2 <- function() {
-
-
-
-
-vcd::spine(Priority ~ Duration, RGraphics::xmm)
-
-
-
-durn <- RGraphics::xmm$Duration/1000
-vcd::cd_plot(Priority ~ durn, RGraphics::xmm, xlab="Duration (1000s)")
-
-
-
-}
-figure13.3 <- function() {
-trellis.par.set(theme = canonical.theme("postscript", color=FALSE))
-catTab <- table(RGraphics::xmm$Schedule, RGraphics::xmm$Priority)
-print(barchart(prop.table(catTab, margin=1), col=gray(1:3/4)),
-      pos=c(0, 0, .5, 1), more=TRUE)
-print(barchart(prop.table(catTab, margin=1), col=gray(1:3/4), stack=FALSE),
-      pos=c(.5, 0, 1, 1))
-
-
-
-grid.newpage()
-pushViewport(viewport(x=0, width=.5, just="left"))
-print(
-ggplot(as.data.frame(prop.table(catTab, margin=1))) +
-    geom_bar(aes(x=Var1, fill=Var2, y=Freq), 
-             stat="identity", col="black") +
-    scale_fill_manual(values=gray(1:3/3)),
-      newpage=FALSE)
-popViewport()
-pushViewport(viewport(x=1, width=.5, just="right"))
-print(
-ggplot(as.data.frame(prop.table(catTab, margin=1))) +
-    geom_bar(aes(x=Var1, fill=Var2, y=Freq), 
-             stat="identity", col="black", position="dodge") +
-    scale_fill_manual(values=gray(1:3/3)),
-      newpage=FALSE)
-popViewport()
-
-
-
-
-}
-figure13.4 <- function() {
-
-
-
-
-vcd::mosaic(Priority ~ Schedule, RGraphics::xmm)
-
-
-
-vcd::mosaic(nObs ~ Schedule + Priority, RGraphics::xmm,
-       labeling_args=list(rot_labels=c(right=0), 
-         offset_labels=c(right=-.5),
-         just_labels=c(right="left")),
-       margin=c(right=4))
-
-
-
-
-}
-figure13.5 <- function() {
-
-
-
-
-grid.rect(gp=gpar(col=NA, fill="gray"))
-vcd::tile(nObs ~ Schedule + Priority, RGraphics::xmm,
-     tile_type="area",
-     shade=TRUE, 
-     gp=gpar(lwd=2, fill="white"), 
-     pos_labels=c(left="left", top="left", right="left"), 
-     just_labels=c(left="left", top="left", right="left"),
-     pop=FALSE, newpage=FALSE)
-
-downViewport("cell:Schedule=fixed,Priority=C,nObs=multiple")
-grid.circle(0, 0, r=unit(1, "mm"))
-upViewport(0)
-
-downViewport("cell:Schedule=fixed,Priority=C,nObs=single")
-grid.circle(0, 0, r=unit(1, "mm"))
-upViewport(0)
-downViewport("cell:Schedule=free,Priority=A,nObs=multiple")
-grid.circle(0, 0, r=unit(1, "mm"))
-upViewport(0)
-downViewport("cell:Schedule=free,Priority=B,nObs=multiple")
-grid.circle(0, 0, r=unit(1, "mm"))
-upViewport(0)
-
-
-
-
-vcd::doubledecker(nObs ~ Schedule + Priority, RGraphics::xmm,
-             dep_varname=FALSE,
-             gp=gpar(fill=c("gray90", "gray")),
-             offset_labels=c(right=-.5),
-             margins=c(bottom=3, left=1, top=1, right=5))
-
-
-
-
-}
-figure13.6 <- function() {
-xmm <- read.table(file.path("XMM-Newton", "XMM-Newton.txt"),
-                  header=TRUE)
-
-
-
-
-
-
-
-pairs(vcd::structable(nObs ~ Priority + Schedule, RGraphics::xmm),
-      space=.15)
-
-
-
-}
-figure13.7 <- function() {
-vcd::cotabplot(~ Schedule + Priority | nObs, RGraphics::xmm)
-
-
-
-}
-figure13.8 <- function() {
-
-
-
-
-# Need the .1 cos the handling of zero cells seems off
-# Also need the custom shading to produce gray-scale
-vcdExtra::mosaic3d(vcd::structable(~ Priority + Schedule + nObs, RGraphics::xmm) + .1, 
-         shading=function(x) { "gray" })
 
 
 

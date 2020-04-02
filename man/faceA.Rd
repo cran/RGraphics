@@ -3,7 +3,6 @@
 \alias{faceB}
 \alias{faceC}
 \alias{faceD}
-\alias{faceE}
 \title{Draw a face}
 \description{Draws a face, consisting of a rectangle
 for the border, circles for eyes, and a line for the mouth.}
@@ -12,7 +11,6 @@ faceA(x, y, width, height)
 faceB(x, y, width, height)
 faceC(x, y, width, height)
 faceD(x, y, width, height)
-faceE(x, y, width, height)
 }
 \arguments{
   \item{x, y, width, height}{
@@ -23,7 +21,7 @@ faceE(x, y, width, height)
 The functions \code{faceA} and \code{faceB} are
 graphics functions to be used for their side effect of
 producing graphical output.
-The functions \code{faceC}, \code{faceD}, and \code{faceE}
+The functions \code{faceC} and \code{faceD}
 return a grob representing a face (and produce no output).
 }
 \keyword{dplot}

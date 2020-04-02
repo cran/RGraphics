@@ -2,7 +2,7 @@
 # (actually just variables that codetools cannot find)
 if(getRversion() >= "2.15.1") {
     utils::globalVariables(unique(c(
-        "supp", "grayify", "year", "displ", "hwy", "cyl", "YHOO", "GlaucomaM",
+        "supp", "grayify", "year", "displ", "hwy", "cyl", "AABA", "GlaucomaM",
         "myNode", "soil", "NHANES", "Category", "Count", "Var1", "Var2",
         "Freq", "grd", "DEPTH", "DEPTH", "DEPTH", "DEPTH", "gear", "gear",
         "lowTideDate", "lowTideHour", "mainHours", "phases", "gear", "gear",
