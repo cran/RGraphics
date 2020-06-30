@@ -1,4 +1,5 @@
-import(methods, grDevices, graphics, grid)
+import(methods, grDevices, graphics)
+import(grid, except=c("linearGradient", "radialGradient", "pattern"))
 importFrom("stats", 
            "aggregate", "as.dendrogram", "coef", "density",
            "dist", "dnorm", "dpois", "hclust", "lm", "pchisq",

@@ -1,12 +1,11 @@
-fae494537a76fa2d865df15a790548e5 *DESCRIPTION
-5ad7152d3de36ceed05a5d35ce2d3dcf *NAMESPACE
+10e61bf86f5ccd39a152ea1ec1b1be19 *DESCRIPTION
+666ed90fd77105f480ffe9c21ff10901 *NAMESPACE
 9f015c18aaad71389a9ea5bb9b40b2a2 *R/figures.R
 fe865b7cca683edfffb6a3c33e83e215 *R/globals.R
-070bc602ab3710a2719f29a96e60d554 *data/AABA.R
-84eb6b8fc0dca108d047dd1320a013fe *data/ocean.R
-e7c28f0f587354996e2a80198344be17 *data/ozTemp.R
-431a08bdffbc75d48b5548733a73a5f3 *data/wind.R
-78e08166b4a114b2f0f5d0f64a3e2da2 *data/xmm.R
+b96fd16165fe8561ff152381230abe5d *data/AABA.rda
+af06ce4ca68ad32ccfe4921300931408 *data/ocean.rda
+61a1c4d58a57e31b3836a8c5040cc74f *data/ozTemp.rda
+c47e3516773a9c54429074d2aac1dd0f *data/wind.rda
 437529b8d5a02449617bf41abed4bcb8 *inst/extra/AfterTheBombs.jpg
 0313f7cf66cf8a4139b37d74319f4445 *inst/extra/GPN-2000-000473.jpg
 fa902d6e64b72858d7ef351a67558337 *inst/extra/Rlogo.png
@@ -49,4 +48,3 @@ fdb0040c8fb52f16b93d57a598a0528d *man/utextStatic.Rd
 9bc26540d5a70e79d1eb85a65a2c3d47 *man/utextvpDynamic.Rd
 40a777055c2ac5308e83b8893c9c176d *man/utextvpStatic.Rd
 05b2413035afbadefa077704444deb62 *man/wind9am.Rd
-ed303ea3479272449c264c39e5b8490d *man/xmm.Rd

@@ -1,6 +1,6 @@
 Package: RGraphics
 Title: Data and Functions from the Book R Graphics, Third Edition
-Version: 3.0-1
+Version: 3.0-2
 Author: Paul Murrell
 Description: Data and Functions from the book R Graphics, Third Edition. There is a function to produce each figure in the book, plus several functions, classes, and methods defined in Chapter 8.  
 Maintainer: Paul Murrell <paul@stat.auckland.ac.nz>
@@ -15,6 +15,6 @@ License: GPL
 LazyData: yes
 URL: https://www.stat.auckland.ac.nz/~paul/RG3e/index.html
 NeedsCompilation: no
-Packaged: 2020-04-01 01:28:45 UTC; pmur002
+Packaged: 2020-06-29 21:25:39 UTC; pmur002
 Repository: CRAN
-Date/Publication: 2020-04-02 12:00:20 UTC
+Date/Publication: 2020-06-30 04:30:03 UTC
